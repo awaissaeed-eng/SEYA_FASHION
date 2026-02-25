@@ -1,0 +1,84 @@
+═══════════════════════════════════════════════════════════
+    SEYA FASHION - PRODUCTION DEPLOYMENT CHECKLIST
+═══════════════════════════════════════════════════════════
+
+✅ PREPARATION (COMPLETED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Backend .env → NODE_ENV=production
+✓ Backend .env → CLIENT_URL=https://seyafashion.com.pk
+✓ Frontend .env → VITE_API_URL=https://palevioletred-mallard-931043.hostingersite.com/api
+✓ Frontend production build created in dist/ folder
+✓ All files ready for upload
+
+
+📤 UPLOAD TO HOSTINGER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FRONTEND FILES (from frontend/dist/ to public_html/):
+□ index.html
+□ sw.js (must be in ROOT!)
+□ vite.svg
+□ assets/ folder (entire folder with all JS/CSS files)
+□ .htaccess (from project root)
+
+BACKEND FILES (upload to backend folder on Hostinger):
+□ backend/.env (production version)
+□ backend/server.js
+□ backend/controllers/cartController.js
+□ All other backend files (if first deployment)
+
+
+🔧 SERVER SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ SSH into Hostinger
+□ Navigate to backend folder
+□ Run: npm install (if first deployment)
+□ Start backend: pm2 start ecosystem.config.js OR npm start
+□ Verify backend running: pm2 status
+
+
+🧪 TESTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Test backend API:
+  https://palevioletred-mallard-931043.hostingersite.com/api/health
+  
+□ Visit website: https://seyafashion.com.pk
+
+□ Test homepage loads
+
+□ Test shop page - products display
+
+□ Test add to cart from shop page
+
+□ Test cart page - items appear immediately
+
+□ Test product detail page
+
+□ Test checkout page
+
+□ Open browser console (F12) - check for NO errors
+
+□ Verify NO localhost:5000 errors in console
+
+
+✨ FINAL CHECKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Clear browser cache (Ctrl+Shift+R)
+
+□ Test on different browser
+
+□ Test on mobile device
+
+□ Check all images load correctly
+
+□ Verify cart icon updates in header
+
+□ Test complete checkout flow
+
+
+═══════════════════════════════════════════════════════════
+    YOUR WEBSITE IS LIVE! 🎉
+═══════════════════════════════════════════════════════════
+
+Main Site: https://seyafashion.com.pk
+Backend API: https://palevioletred-mallard-931043.hostingersite.com/api
+Admin Panel: https://seyafashion.com.pk/admin/login
