@@ -419,10 +419,10 @@ const Home = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4 lg:gap-1 items-center"
                   >
                     
-                    <div className="relative w-3/4 md:w-2/3 lg:w-1/2 h-60 md:h-70 lg:h-96 mx-auto">
+                    <div className="relative w-3/4 md:w-full lg:w-2/4 h-60 md:h-70 lg:h-100 mx-auto lg:mx-60">
                       <ImageWithFallback
                         src={cat.image ? getImageUrl(cat.image) : '/placeholder.png'}
                         alt={cat.name}
