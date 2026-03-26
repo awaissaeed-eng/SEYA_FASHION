@@ -1,6 +1,6 @@
 # 🛍️ Seya Fashion
 
-A full-stack e-commerce platform for a women clothing brand, built from scratch with modern web technologies. Features a complete shopping experience with secure payments, admin dashboard, and real-time inventory management.
+A full-stack e-commerce platform for a women's clothing brand, built from scratch with modern web technologies. Features a complete shopping experience with secure payments, admin dashboard, and real-time inventory management.
 
 🌐 **Live Demo:** [seyafashion.com.pk](https://seyafashion.com.pk)
 
@@ -86,7 +86,7 @@ I developed this entire project **solo from scratch**, handling:
 
 ## 👤 Author
 
-**Awais Saeed**
+**Awais Chaudhry**
 
 Developed as a complete full-stack e-commerce solution demonstrating expertise in MERN stack development, payment integration, and production deployment.
 
