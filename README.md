@@ -1,175 +1,210 @@
+<div align="center">
+
 # 🛍️ Seya Fashion
 
-A full-stack e-commerce platform for a women's clothing brand, built from scratch with modern web technologies. Features a complete shopping experience with secure payments, admin dashboard, and real-time inventory management.
+### Full-Stack E-Commerce Platform for Women's Clothing
 
-🌐 **Live Demo:** [seyafashion.com.pk](https://seyafashion.com.pk)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-seyafashion.com.pk-FF69B4?style=for-the-badge)](https://seyafashion.com.pk)
+[![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)]()
+[![Built With](https://img.shields.io/badge/Built_With-MERN_Stack-61DAFB?style=for-the-badge)]()
+
+*A production-ready e-commerce solution with secure payments, admin dashboard, and real-time inventory management*
+
+</div>
 
 ---
 
-## 🚀 Tech Stack
+## 🎯 Overview
 
-**Frontend:** React, React Router, Tailwind CSS, Axios, TipTap Editor  
-**Backend:** Node.js, Express.js, JWT Authentication  
-**Database:** MongoDB (Mongoose ODM)  
-**Cloud Services:** Cloudinary (Image Management)  
-**Payment Integration:** Stripe, PayPal, Meezan Bank Gateway  
-**Email Service:** Nodemailer (SMTP)
+Complete e-commerce platform built from scratch featuring customer shopping experience, admin management system, and integrated payment gateways. Designed for scalability and real-world business operations.
+
+<div align="center">
+
+### 🚀 Tech Stack
+
+</div>
+
+<table align="center">
+<tr>
+<td align="center" width="33%">
+
+**Frontend**
+<br><br>
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat&logo=react-router&logoColor=white)
+
+</td>
+<td align="center" width="33%">
+
+**Backend**
+<br><br>
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=json-web-tokens&logoColor=white)
+
+</td>
+<td align="center" width="33%">
+
+**Database & Cloud**
+<br><br>
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=flat&logo=cloudinary&logoColor=white)
+
+</td>
+</tr>
+</table>
 
 ---
 
 ## ✨ Key Features
 
-### Customer Experience
-- Browse products by category with advanced filtering
-- Product details with size selection and custom measurements
-- Shopping cart with real-time stock validation
-- Secure checkout with multiple payment options
-- Order tracking and history
-- Email notifications for order updates
-- Newsletter subscription
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### Admin Dashboard
-- Complete product management (CRUD operations)
-- Category management with image uploads
-- Order management with status tracking
-- User management and activity logs
-- Dashboard analytics and insights
-- Hero section customization
-- Tax settings configuration
-- Support content management
+### 🛒 Customer Features
+- 🔍 Advanced product filtering & search
+- � Custom size measurements
+- 🛍️ Real-time cart & stock validation
+- 💳 Multiple payment gateways
+- 📦 Order tracking & history
+- 📧 Automated email notifications
+- 📱 Fully responsive design
 
-### Technical Highlights
-- JWT-based authentication with secure cookies
-- Role-based access control (Admin/Customer)
-- Image optimization with Cloudinary
-- Rate limiting and security middleware
-- Responsive design for all devices
-- RESTful API architecture
+</td>
+<td width="50%" valign="top">
 
----
+### 👨‍💼 Admin Dashboard
+- 📊 Analytics & insights
+- 🏷️ Product & category management
+- 📦 Order status tracking
+- 👥 User management
+- 🖼️ Image upload & optimization
+- ⚙️ Tax & settings configuration
+- 📝 Rich text content editor
 
-## 👨‍💻 My Role
+</td>
+</tr>
+</table>
 
-I developed this entire project **solo from scratch**, handling:
-- Full-stack architecture and implementation
-- Database design and optimization
-- Payment gateway integration
-- Admin dashboard with rich text editor
-- Security implementation (authentication, authorization, rate limiting)
-- Cloud deployment and configuration
-- UI/UX design and responsive layouts
+### 🔐 Security & Performance
+```
+✓ JWT Authentication          ✓ Rate Limiting
+✓ Role-Based Access Control   ✓ Input Sanitization
+✓ Secure Cookie Handling      ✓ Image Optimization
+✓ Payment Gateway Integration ✓ RESTful API Design
+```
 
 ---
 
 ## 📸 Screenshots
 
+<div align="center">
+
 ### Customer Interface
-### Home
 
-
-<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/62ac51fb-d75a-40b3-85f1-284f40ac951b" />
-
-
-### Shop
-
-
-<img width="1920" height="1821" alt="user shop" src="https://github.com/user-attachments/assets/1c34d411-8baa-44b7-a4a1-f84fc2b9d02a" />
-
-
-
-### Product detail
-
-
-<img width="1920" height="2390" alt="user product detail page" src="https://github.com/user-attachments/assets/9b67c55a-e25b-4103-b5d0-e9084f093b5a" />
-
-
-
-### About
-
-
-<img width="1920" height="4811" alt="user about" src="https://github.com/user-attachments/assets/5219e857-f6cb-4603-bfd1-5a1bbd95ff53" />
-
-
-### Support
-
-
-<img width="1920" height="3774" alt="user support" src="https://github.com/user-attachments/assets/b465298b-d98f-4d7c-87ed-137a295e6eed" />
-
-
-### Wishlist
-
-
-<img width="1920" height="1565" alt="user fav" src="https://github.com/user-attachments/assets/afa88ede-741c-49a9-ac79-f02fbb1a9349" />
-
-
-### Cart
-
-
-<img width="1920" height="1319" alt="user cart" src="https://github.com/user-attachments/assets/43e8a78e-c96e-40de-bb5f-6ab92fe78ae6" />
-
-
-### Checkout
-
-
-<img width="1920" height="1877" alt="user checkout" src="https://github.com/user-attachments/assets/a712e03b-3844-4dfb-a358-dea19f61043b" />
-
-
+<table>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/homepage.png" alt="Homepage" />
+<p align="center"><b>Homepage</b></p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/products.png" alt="Products" />
+<p align="center"><b>Product Catalog</b></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/product-details.png" alt="Product Details" />
+<p align="center"><b>Product Details</b></p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/cart.png" alt="Shopping Cart" />
+<p align="center"><b>Shopping Cart</b></p>
+</td>
+</tr>
+</table>
 
 ### Admin Dashboard
 
+<table>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/admin-dashboard.png" alt="Dashboard" />
+<p align="center"><b>Analytics Dashboard</b></p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/admin-products.png" alt="Product Management" />
+<p align="center"><b>Product Management</b></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/admin-orders.png" alt="Order Management" />
+<p align="center"><b>Order Management</b></p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/admin-analytics.png" alt="Analytics" />
+<p align="center"><b>Business Analytics</b></p>
+</td>
+</tr>
+</table>
 
-<img width="1920" height="878" alt="admin dashboard" src="https://github.com/user-attachments/assets/e65a15de-4384-4db8-9a5d-f4e66884e43a" />
-
-
-### Order
-
-
-<img width="1920" height="878" alt="admin order" src="https://github.com/user-attachments/assets/cf54a5b2-f7cb-4907-b699-9424ad8f68b7" />
-
-
-
-### product 
-
-
-<img width="1920" height="1127" alt="admin product" src="https://github.com/user-attachments/assets/b6b06bbd-1c32-4ec7-9e90-fdc7b2c0e5ff" />
-
-
-### Categories
-
-
-<img width="1920" height="878" alt="admin categorie" src="https://github.com/user-attachments/assets/168b2caf-ac7a-4060-9472-185d899c9c36" />
-
-
-### hero section
-
-
-<img width="1920" height="2182" alt="admin hero section" src="https://github.com/user-attachments/assets/13b03f1a-90cc-4ba1-8fe9-34ab98f44bc0" />
-
-
-
-### links
-
-<img width="1920" height="1413" alt="admin links" src="https://github.com/user-attachments/assets/2ae0ed4d-1768-4268-94dd-4d5f60412080" />
-
-
-
-### Subscription
-
-
-<img width="1920" height="944" alt="admin subscription" src="https://github.com/user-attachments/assets/e2068c7f-7086-471d-b62c-cb4a4b3cf257" />
-
-
-### Support
-
-
-<img width="1920" height="1185" alt="admin supports" src="https://github.com/user-attachments/assets/d873ea97-1b87-48bd-914b-7a6bb9542ffd" />
-
+</div>
 
 ---
 
+## 👨‍💻 Development
+
+<div align="center">
+
+### **Solo Full-Stack Development**
+
+*Independently designed, developed, and deployed from concept to production*
+
+</div>
+
+**Responsibilities:**
+- 🏗️ Full-stack architecture & implementation
+- 🗄️ Database design & optimization
+- 💳 Payment gateway integration (Stripe, PayPal, Meezan Bank)
+- 🎨 UI/UX design & responsive layouts
+- 🔒 Security implementation & authentication
+- ☁️ Cloud deployment & configuration
+- 📧 Email service integration
+
+---
+
+## � Quick Start
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/seya-fashion.git
+
+# Backend setup
+cd backend
+npm install
+npm run dev
+
+# Frontend setup (new terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+> **Note:** Configure `.env` files in both directories with your credentials before running.
+
+---
+
+<div align="center">
+
 ## 📊 Project Status
 
-✅ **Live and Running** - Currently serving real customers at [seyafashion.com.pk](https://seyafashion.com.pk)
+**✅ LIVE IN PRODUCTION**
+
+Currently serving real customers at [seyafashion.com.pk](https://seyafashion.com.pk)
 
 ---
 
@@ -177,26 +212,20 @@ I developed this entire project **solo from scratch**, handling:
 
 **Awais Chaudhry**
 
-Developed as a complete full-stack e-commerce solution demonstrating expertise in MERN stack development, payment integration, and production deployment.
+Full-Stack Developer | MERN Stack Specialist
+
+*Demonstrating expertise in modern web development, payment integration, and production deployment*
 
 ---
 
-## 📝 Quick Setup (Optional)
+### 📫 Connect
 
-```bash
-# Backend
-cd backend
-npm install
-npm run dev
-
-# Frontend
-cd frontend
-npm install
-npm run dev
-```
-
-Configure `.env` files in both directories with your credentials.
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=About.me&logoColor=white)]()
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]()
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)]()
 
 ---
 
 *Built with ❤️ using the MERN Stack*
+
+</div>
