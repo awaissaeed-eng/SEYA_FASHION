@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-seyafashion.com.pk-FF69B4?style=for-the-badge)](https://seyafashion.com.pk)
 [![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)]()
-[![Built With](https://img.shields.io/badge/Built_With-MERN_Stack-61DAFB?style=for-the-badge)]()
+[![Built With](https://img.shields.io/badge/Built_With-MERN_Stack-61DAFB?style=for-the-badge)]
 
 *A production-ready e-commerce solution with secure payments, admin dashboard, and real-time inventory management*
 
@@ -220,9 +220,9 @@ Full-Stack Developer | MERN Stack Specialist
 
 ### 📫 Connect
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=About.me&logoColor=white)]()
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]()
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)]()
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=About.me&logoColor=white)]
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)]
 
 ---
 
