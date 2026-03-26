@@ -64,11 +64,31 @@ I developed this entire project **solo from scratch**, handling:
 ## 📸 Screenshots
 
 ### Customer Interface
-![Homepage](docs/screenshots/homepage.png)
-![Product Listing](docs/screenshots/products.png)
-![Product Details](docs/screenshots/product-details.png)
-![Shopping Cart](docs/screenshots/cart.png)
-![Checkout](docs/screenshots/checkout.png)
+**Home**
+<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/62ac51fb-d75a-40b3-85f1-284f40ac951b" />
+
+**Shop**
+<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/f87db4cb-a92d-4971-9416-9491ad5fb769" />
+
+**Product detail**
+<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/d3f3b399-8b40-4ca0-94c0-de2129cab980" />
+
+**About**
+<img width="1920" height="4811" alt="user about" src="https://github.com/user-attachments/assets/5219e857-f6cb-4603-bfd1-5a1bbd95ff53" />
+
+**Support**
+<img width="1920" height="3774" alt="user support" src="https://github.com/user-attachments/assets/b465298b-d98f-4d7c-87ed-137a295e6eed" />
+
+**Whishlist**
+<img width="1920" height="3774" alt="user support" src="https://github.com/user-attachments/assets/fdcc87a6-ad08-4c03-9d02-004b44e0a21d" />
+
+**cart**
+<img width="1920" height="1319" alt="user cart" src="https://github.com/user-attachments/assets/43e8a78e-c96e-40de-bb5f-6ab92fe78ae6" />
+
+**Checkout**
+<img width="1920" height="1877" alt="user checkout" src="https://github.com/user-attachments/assets/a712e03b-3844-4dfb-a358-dea19f61043b" />
+
+
 
 ### Admin Dashboard
 ![Admin Dashboard](docs/screenshots/admin-dashboard.png)
