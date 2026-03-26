@@ -116,10 +116,54 @@ I developed this entire project **solo from scratch**, handling:
 
 
 ### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
-![Product Management](docs/screenshots/admin-products.png)
-![Order Management](docs/screenshots/admin-orders.png)
-![Analytics](docs/screenshots/admin-analytics.png)
+
+
+<img width="1920" height="878" alt="admin dashboard" src="https://github.com/user-attachments/assets/e65a15de-4384-4db8-9a5d-f4e66884e43a" />
+
+
+### Order
+
+
+<img width="1920" height="878" alt="admin order" src="https://github.com/user-attachments/assets/cf54a5b2-f7cb-4907-b699-9424ad8f68b7" />
+
+
+
+### product 
+
+
+<img width="1920" height="1127" alt="admin product" src="https://github.com/user-attachments/assets/b6b06bbd-1c32-4ec7-9e90-fdc7b2c0e5ff" />
+
+
+### Categories
+
+
+<img width="1920" height="878" alt="admin categorie" src="https://github.com/user-attachments/assets/168b2caf-ac7a-4060-9472-185d899c9c36" />
+
+
+### hero section
+
+
+<img width="1920" height="2182" alt="admin hero section" src="https://github.com/user-attachments/assets/13b03f1a-90cc-4ba1-8fe9-34ab98f44bc0" />
+
+
+
+### links
+
+<img width="1920" height="1413" alt="admin links" src="https://github.com/user-attachments/assets/2ae0ed4d-1768-4268-94dd-4d5f60412080" />
+
+
+
+### Subscription
+
+
+<img width="1920" height="944" alt="admin subscription" src="https://github.com/user-attachments/assets/e2068c7f-7086-471d-b62c-cb4a4b3cf257" />
+
+
+### Support
+
+
+<img width="1920" height="1185" alt="admin supports" src="https://github.com/user-attachments/assets/d873ea97-1b87-48bd-914b-7a6bb9542ffd" />
+
 
 ---
 
