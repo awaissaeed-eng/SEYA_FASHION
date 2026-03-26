@@ -73,13 +73,15 @@ I developed this entire project **solo from scratch**, handling:
 ### Shop
 
 
-<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/f87db4cb-a92d-4971-9416-9491ad5fb769" />
+<img width="1920" height="1821" alt="user shop" src="https://github.com/user-attachments/assets/1c34d411-8baa-44b7-a4a1-f84fc2b9d02a" />
+
 
 
 ### Product detail
 
 
-<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/d3f3b399-8b40-4ca0-94c0-de2129cab980" />
+<img width="1920" height="2390" alt="user product detail page" src="https://github.com/user-attachments/assets/9b67c55a-e25b-4103-b5d0-e9084f093b5a" />
+
 
 
 ### About
