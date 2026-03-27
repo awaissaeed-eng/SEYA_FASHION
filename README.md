@@ -100,59 +100,57 @@ Complete e-commerce platform built from scratch featuring customer shopping expe
 
 ## 📸 Screenshots
 
-<div align="center">
-
 ### Customer Interface
 
-<table>
-<tr>
-<td width="50%">
-<img src="docs/screenshots/homepage.png" alt="Homepage" />
-<p align="center"><b>Homepage</b></p>
-</td>
-<td width="50%">
-<img src="docs/screenshots/products.png" alt="Products" />
-<p align="center"><b>Product Catalog</b></p>
-</td>
-</tr>
-<tr>
-<td width="50%">
-<img src="docs/screenshots/product-details.png" alt="Product Details" />
-<p align="center"><b>Product Details</b></p>
-</td>
-<td width="50%">
-<img src="docs/screenshots/cart.png" alt="Shopping Cart" />
-<p align="center"><b>Shopping Cart</b></p>
-</td>
-</tr>
-</table>
+#### Homepage
+*(Paste Homepage Screenshot Here)*
+
+---
+
+#### Product Catalog
+*(Paste Product Catalog Screenshot Here)*
+
+---
+
+#### Product Details
+*(Paste Product Details Screenshot Here)*
+
+---
+
+#### Shopping Cart
+*(Paste Shopping Cart Screenshot Here)*
+
+---
+
+#### Checkout Process
+*(Paste Checkout Screenshot Here)*
+
+---
 
 ### Admin Dashboard
 
-<table>
-<tr>
-<td width="50%">
-<img src="docs/screenshots/admin-dashboard.png" alt="Dashboard" />
-<p align="center"><b>Analytics Dashboard</b></p>
-</td>
-<td width="50%">
-<img src="docs/screenshots/admin-products.png" alt="Product Management" />
-<p align="center"><b>Product Management</b></p>
-</td>
-</tr>
-<tr>
-<td width="50%">
-<img src="docs/screenshots/admin-orders.png" alt="Order Management" />
-<p align="center"><b>Order Management</b></p>
-</td>
-<td width="50%">
-<img src="docs/screenshots/admin-analytics.png" alt="Analytics" />
-<p align="center"><b>Business Analytics</b></p>
-</td>
-</tr>
-</table>
+#### Analytics Dashboard
+*(Paste Analytics Dashboard Screenshot Here)*
 
-</div>
+---
+
+#### Product Management
+*(Paste Product Management Screenshot Here)*
+
+---
+
+#### Order Management
+*(Paste Order Management Screenshot Here)*
+
+---
+
+#### Category Management
+*(Paste Category Management Screenshot Here)*
+
+---
+
+#### User Management
+*(Paste User Management Screenshot Here)*
 
 ---
 
