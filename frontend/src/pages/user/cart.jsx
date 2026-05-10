@@ -252,7 +252,7 @@ export default function Cart() {
                                 <button
                                   onClick={() => updateQuantity(itemKey, -1)}
                                   disabled={item.quantity <= 1}
-                                  className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${
+                                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all flex items-center justify-center touch-manipulation ${
                                     item.quantity <= 1
                                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                       : 'bg-[#f5f1e8] text-[#592a0d] hover:bg-[#bfa77b] hover:text-white'
@@ -267,7 +267,7 @@ export default function Cart() {
                                 <button
                                   onClick={() => updateQuantity(itemKey, 1)}
                                   disabled={item.quantity >= getItemStock(item)}
-                                  className={`w-8 h-8 rounded-full transition-all flex items-center justify-center ${
+                                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all flex items-center justify-center touch-manipulation ${
                                     item.quantity >= getItemStock(item)
                                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                       : 'bg-[#f5f1e8] text-[#592a0d] hover:bg-[#bfa77b] hover:text-white'

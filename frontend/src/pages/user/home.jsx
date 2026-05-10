@@ -64,18 +64,18 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="container mx-auto py-12 md:py-20">
+    <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-transparent rounded-2xl p-8 md:p-12 text-center border-2 border-[#bfa77b] relative z-10"
+        className="bg-transparent rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 text-center border-2 border-[#bfa77b] relative z-10"
       >
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-[#592a0d] rounded-full mb-6">
-          <Mail className="w-8 h-8 text-[#bfa77b]" />
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-[#592a0d] rounded-full mb-4 sm:mb-5 md:mb-6">
+          <Mail className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#bfa77b]" />
         </div>
-        <h3 className="text-[#bfa77b] text-2xl md:text-4xl font-serif font-bold mb-4">Stay Updated</h3>
-        <p className="text-[#592a0d] text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed">
+        <h3 className="text-[#bfa77b] text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold mb-3 sm:mb-4">Stay Updated</h3>
+        <p className="text-[#592a0d] text-sm sm:text-base md:text-lg mb-5 sm:mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed">
           Subscribe to our newsletter for exclusive offers and latest collections
         </p>
         
@@ -299,7 +299,7 @@ const Home = () => {
             />
           )}
 
-          <div className={`container mx-auto px-4 md:px-6 lg:px-8 h-full flex relative z-10 ${
+          <div className={`w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 h-full flex relative z-10 ${
             heroSettings?.contentVerticalPosition === 'top' ? 'items-start pt-20' :
             heroSettings?.contentVerticalPosition === 'bottom' ? 'items-end pb-20' : 'items-center'
           } ${
@@ -394,16 +394,15 @@ const Home = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="py-8 md:py-12 mt-8 md:mt-12 relative">
-          <div className="container mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-8 md:mb-12"
-            >
-              <h2 className="text-[#bfa77b] text-3xl md:text-5xl font-serif font-bold mb-4">Shop By Collection</h2>
-              <p className="text-[#592a0d] text-base md:text-lg">Curated collections for every occasion</p>
+        <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-10 md:mb-12"
+          >
+              <h2 className="text-[#bfa77b] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-3 sm:mb-4">Shop By Collection</h2>
+              <p className="text-[#592a0d] text-sm sm:text-base md:text-lg">Curated collections for every occasion</p>
             </motion.div>
 
             {loadingCategories ? (
@@ -411,7 +410,7 @@ const Home = () => {
             ) : categories.length === 0 ? (
               <div className="text-center py-8 text-[#592a0d]">No collections found.</div>
             ) : (
-              <div className="flex flex-col gap-12 md:gap-16">
+              <div className="flex flex-col gap-10 sm:gap-12 md:gap-14 lg:gap-16">
                 {categories.map((cat, index) => (
                   <motion.div
                     key={cat._id}
@@ -450,20 +449,18 @@ const Home = () => {
                 ))}
               </div>
             )}
-          </div>
         </section>
 
         {/* Featured Slider */}
-        <section className="relative">
-          <div className="container mx-auto py-12 md:py-20 relative">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-8 md:mb-12"
-            >
-              <h2 className="text-[#bfa77b] text-3xl md:text-5xl font-serif font-bold mb-4">Featured Collection</h2>
-              <p className="text-[#592a0d] text-base md:text-lg">Handpicked pieces just for you</p>
+        <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-10 md:mb-12"
+          >
+              <h2 className="text-[#bfa77b] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-3 sm:mb-4">Featured Collection</h2>
+              <p className="text-[#592a0d] text-sm sm:text-base md:text-lg">Handpicked pieces just for you</p>
             </motion.div>
 
             <div className="relative max-w-6xl mx-auto">
@@ -539,7 +536,6 @@ const Home = () => {
                 ))}
               </div>
             </div>
-          </div>
         </section>
 
         {/* Newsletter Section */}
