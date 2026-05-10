@@ -103,54 +103,68 @@ Complete e-commerce platform built from scratch featuring customer shopping expe
 ### Customer Interface
 
 #### Homepage
-*(Paste Homepage Screenshot Here)*
+
+<img width="1920" height="3945" alt="user Home" src="https://github.com/user-attachments/assets/4e33a47e-0864-427d-b9de-26f3409a07d7" />
+
 
 ---
 
 #### Product Catalog
-*(Paste Product Catalog Screenshot Here)*
+
+<img width="1920" height="1821" alt="user shop" src="https://github.com/user-attachments/assets/c2a5d034-2339-464d-895a-f7339aa8ddd8" />
+
 
 ---
 
 #### Product Details
-*(Paste Product Details Screenshot Here)*
+
+<img width="1920" height="2390" alt="user product detail page" src="https://github.com/user-attachments/assets/702ce8ab-cb04-44eb-8dd3-5559f70bde3a" />
+
 
 ---
 
 #### Shopping Cart
-*(Paste Shopping Cart Screenshot Here)*
+
+<img width="1920" height="1319" alt="user cart" src="https://github.com/user-attachments/assets/0f1ae341-565f-47a3-a19f-9c18aced442b" />
+
 
 ---
 
 #### Checkout Process
-*(Paste Checkout Screenshot Here)*
+
+<img width="1920" height="1877" alt="user checkout" src="https://github.com/user-attachments/assets/fac993b8-d859-4b98-930f-5d5622f5dad5" />
+
+
 
 ---
 
 ### Admin Dashboard
 
 #### Analytics Dashboard
-*(Paste Analytics Dashboard Screenshot Here)*
+
+<img width="1920" height="878" alt="admin dashboard" src="https://github.com/user-attachments/assets/b62eebe3-f5e1-4fef-ae5c-58c4777ebcf8" />
+
 
 ---
 
 #### Product Management
-*(Paste Product Management Screenshot Here)*
+
+<img width="1920" height="1127" alt="admin product" src="https://github.com/user-attachments/assets/2cd2269a-9616-4df0-9e86-8df5c6306df0" />
+
 
 ---
 
 #### Order Management
-*(Paste Order Management Screenshot Here)*
+
+<img width="1920" height="878" alt="admin order" src="https://github.com/user-attachments/assets/161fb15f-768f-4976-b017-e13a207958be" />
+
 
 ---
 
 #### Category Management
-*(Paste Category Management Screenshot Here)*
 
----
+<img width="1920" height="878" alt="admin categorie" src="https://github.com/user-attachments/assets/043515aa-98dc-4fc8-8ac7-cf0b5e75a158" />
 
-#### User Management
-*(Paste User Management Screenshot Here)*
 
 ---
 
