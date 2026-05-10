@@ -179,7 +179,7 @@ exports.removeFromWishlist = async (req, res, next) => {
 // Update admin profile
 exports.updateAdminProfile = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, phone, role, bio } = req.body;
+    const { firstName, lastName, email, phone } = req.body;
     
     if (email) {
       const existingUser = await User.findOne({ email, _id: { $ne: req.userId } });
@@ -198,8 +198,6 @@ exports.updateAdminProfile = async (req, res, next) => {
     if (lastName) updateData.lastName = lastName;
     if (email) updateData.email = email;
     if (phone !== undefined) updateData.phone = phone;
-    if (role) updateData.role = role;
-    if (bio !== undefined) updateData.bio = bio;
 
     // Handle avatar upload to Cloudinary
     if (req.file) {

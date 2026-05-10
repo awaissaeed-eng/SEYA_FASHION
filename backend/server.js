@@ -40,7 +40,7 @@ app.use('/api/products', searchRateLimit);
 // CORS configuration
 app.use(cors({
   origin: [
-    process.env.CLIENT_URL || 'http://localhost:5173',
+    process.env.CLIENT_URL || 'http://localhost:5174',
     'https://seyafashion.com.pk',
     'https://www.seyafashion.com.pk',
     'https://palevioletred-mallard-931043.hostingersite.com'

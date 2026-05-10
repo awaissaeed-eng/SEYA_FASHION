@@ -394,13 +394,13 @@ const Home = () => {
         </section>
 
         {/* Categories Section */}
-        <section className="py-12 md:py-20 mt-16 md:mt-20 relative">
+        <section className="py-8 md:py-12 mt-8 md:mt-12 relative">
           <div className="container mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-16 md:mb-20"
+              className="text-center mb-8 md:mb-12"
             >
               <h2 className="text-[#bfa77b] text-3xl md:text-5xl font-serif font-bold mb-4">Shop By Collection</h2>
               <p className="text-[#592a0d] text-base md:text-lg">Curated collections for every occasion</p>
@@ -419,14 +419,19 @@ const Home = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4 lg:gap-1 items-center"
+                    className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-4 md:gap-6 items-center"
                   >
                     
-                    <div className="relative w-3/4 md:w-full lg:w-2/4 h-60 md:h-70 lg:h-100 mx-auto lg:mx-60">
-                      <ImageWithFallback
+                    <div className="relative w-full h-80 md:h-96 lg:h-[500px] flex items-center justify-center">
+                      <img
                         src={cat.image ? getImageUrl(cat.image) : '/placeholder.png'}
                         alt={cat.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="max-w-full max-h-full rounded-2xl"
+                        style={{ 
+                          objectFit: 'contain', 
+                          objectPosition: 'center'
+                        }}
+                        loading="lazy"
                       />
                     </div>
                     {/* Text section */}

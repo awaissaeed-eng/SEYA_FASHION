@@ -19,7 +19,7 @@ router.get('/', getAllProducts);
 router.get('/featured', getFeaturedProducts);
 router.get('/:id', validateObjectId, getProductById);
 
-// Admin routes (require authentication and admin role)
+// Admin routes (require authentication)
 router.get('/admin/all', verifyToken, adminCheck, getAllProductsAdmin);
 router.post('/', verifyToken, adminCheck, uploadProductImage.array('images', 10), createProduct);
 router.put('/:id', verifyToken, adminCheck, validateObjectId, uploadProductImage.array('images', 10), updateProduct);

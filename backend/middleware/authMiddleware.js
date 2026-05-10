@@ -77,7 +77,7 @@ const adminCheck = async (req, res, next) => {
       return res.status(401).json({ message: 'Authentication required' });
     }
 
-    const user = await User.findById(req.userId).select('role isActive');
+    const user = await User.findById(req.userId).select('isActive');
     
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
@@ -87,11 +87,6 @@ const adminCheck = async (req, res, next) => {
       return res.status(403).json({ message: 'Account deactivated' });
     }
     
-    if (user.role !== 'admin') {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-    
-    req.userRole = user.role;
     next();
   } catch (error) {
     console.error('Admin check error:', error);

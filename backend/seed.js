@@ -21,10 +21,10 @@ const seedDatabase = async () => {
     console.log('Creating admin user...');
     const hashedPassword = await bcrypt.hash('admin123', 10);
     const adminUser = await User.create({
-      name: 'SEYA Fashion Admin',
+      firstName: 'SEYA',
+      lastName: 'Admin',
       email: 'seyafashion1@gmail.com',
       password: hashedPassword,
-      role: 'admin',
       isActive: true
     });
     console.log('✅ Admin user created:', adminUser.email);

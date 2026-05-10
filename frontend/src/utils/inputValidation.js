@@ -189,7 +189,7 @@ export const inputValidators = {
     }
   },
 
-  // Card Number - Numbers only with formatting (lenient validation for testing)
+  // Card Number - Numbers only with formatting and Luhn validation
   cardNumber: {
     filter: (value) => {
       const numbers = value.replace(/\D/g, '');
@@ -199,8 +199,31 @@ export const inputValidators = {
     validate: (value) => {
       const numbers = value.replace(/\D/g, '');
       if (!numbers) return 'Card number is required';
-      if (numbers.length < 4) return 'Card number must be at least 4 digits';
-      // Removed strict Luhn validation for testing
+      if (numbers.length < 13) return 'Card number must be at least 13 digits';
+      if (numbers.length > 19) return 'Card number is too long';
+      
+      // Luhn Algorithm validation
+      let sum = 0;
+      let isEven = false;
+      
+      for (let i = numbers.length - 1; i >= 0; i--) {
+        let digit = parseInt(numbers[i], 10);
+        
+        if (isEven) {
+          digit *= 2;
+          if (digit > 9) {
+            digit -= 9;
+          }
+        }
+        
+        sum += digit;
+        isEven = !isEven;
+      }
+      
+      if (sum % 10 !== 0) {
+        return 'Invalid card number';
+      }
+      
       return '';
     },
     onKeyDown: (e) => {
@@ -210,7 +233,7 @@ export const inputValidators = {
     }
   },
 
-  // Card Expiry - MM/YY format (lenient validation for testing)
+  // Card Expiry - MM/YY format with expiration validation
   cardExpiry: {
     filter: (value) => {
       const numbers = value.replace(/\D/g, '');
@@ -224,9 +247,31 @@ export const inputValidators = {
       if (!/^\d{2}\/\d{2}$/.test(value)) return 'Format: MM/YY';
       
       const [month, year] = value.split('/').map(Number);
+      
+      // Validate month range
       if (month < 1 || month > 12) return 'Invalid month (01-12)';
       
-      // Removed expiration date validation for testing
+      // Check if card is expired
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits of year
+      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
+      
+      // Card is expired if:
+      // 1. Year is less than current year
+      // 2. Year is same as current year but month is less than current month
+      if (year < currentYear) {
+        return 'Card has expired';
+      }
+      
+      if (year === currentYear && month < currentMonth) {
+        return 'Card has expired';
+      }
+      
+      // Check if expiry date is too far in the future (more than 20 years)
+      if (year > currentYear + 20) {
+        return 'Invalid expiry year';
+      }
+      
       return '';
     },
     onKeyDown: (e) => {
@@ -236,15 +281,15 @@ export const inputValidators = {
     }
   },
 
-  // CVV - Numbers only, 3-4 digits (lenient validation for testing)
+  // CVV - Numbers only, 3-4 digits
   cvv: {
     filter: (value) => {
       return value.replace(/\D/g, '').slice(0, 4);
     },
     validate: (value) => {
       if (!value) return 'CVV is required';
-      if (value.length < 1) return 'CVV is required';
-      // Removed strict 3-4 digit requirement for testing
+      if (value.length < 3) return 'CVV must be 3 or 4 digits';
+      if (value.length > 4) return 'CVV must be 3 or 4 digits';
       return '';
     },
     onKeyDown: (e) => {

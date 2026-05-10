@@ -16,8 +16,6 @@ export default function Settings() {
     lastName: '',
     email: '',
     phone: '',
-    role: '',
-    bio: '',
     avatar: null,
   });
   
@@ -42,8 +40,6 @@ export default function Settings() {
         lastName: user.lastName || '',
         email: user.email || '',
         phone: user.phone || '',
-        role: user.role || 'admin',
-        bio: user.bio || '',
         avatar: user.avatar || null,
       });
       if (user.avatar) {
@@ -96,8 +92,6 @@ export default function Settings() {
       formData.append('lastName', profile.lastName);
       formData.append('email', profile.email);
       formData.append('phone', profile.phone);
-      formData.append('role', profile.role);
-      formData.append('bio', profile.bio);
       
       if (avatarFile) {
         formData.append('avatar', avatarFile);
@@ -262,18 +256,6 @@ export default function Settings() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="role" className="text-sm font-medium text-gray-700">Role</label>
-                <select
-                  id="role"
-                  value={profile.role}
-                  onChange={handleProfileChange}
-                  className="w-full border border-[#e8dfd3] rounded-md py-2 px-3 focus:border-[#bfa77b] focus:ring-[#bfa77b] focus:outline-none bg-white"
-                >
-                  <option value="admin">Admin</option>
-                  <option value="user">User</option>
-                </select>
-              </div>
-              <div className="space-y-2">
                 <label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number</label>
                 <input 
                   id="phone" 
@@ -282,17 +264,6 @@ export default function Settings() {
                   className="w-full border border-[#e8dfd3] rounded-md py-2 px-3 focus:border-[#bfa77b] focus:ring-[#bfa77b] focus:outline-none" 
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</label>
-              <textarea 
-                id="bio" 
-                value={profile.bio}
-                onChange={handleProfileChange}
-                placeholder="Tell us about yourself..." 
-                rows={4} 
-                className="w-full border border-[#e8dfd3] rounded-md py-2 px-3 focus:border-[#bfa77b] focus:ring-[#bfa77b] focus:outline-none" 
-              />
             </div>
             <button 
               onClick={handleUpdateProfile}

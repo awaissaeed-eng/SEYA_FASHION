@@ -10,11 +10,23 @@ const InlineStatusDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const dropdownRef = useRef(null);
 
   const statusInfo = getStatusInfo(currentStatus);
   const validNextStatuses = getValidNextStatuses(currentStatus);
   const isTerminal = isTerminalStatus(currentStatus);
+
+  // Update dropdown position
+  const updatePosition = () => {
+    if (dropdownRef.current && isOpen) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX
+      });
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -27,6 +39,20 @@ const InlineStatusDropdown = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Update position on scroll and resize
+  useEffect(() => {
+    if (isOpen) {
+      updatePosition();
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
+    }
+  }, [isOpen]);
 
   const handleStatusSelect = async (newStatus) => {
     if (isLoading || disabled) return;
@@ -47,6 +73,10 @@ const InlineStatusDropdown = ({
       return;
     }
     setIsOpen(!isOpen);
+    // Update position when opening
+    if (!isOpen) {
+      setTimeout(updatePosition, 0);
+    }
   };
 
   return (
@@ -84,37 +114,43 @@ const InlineStatusDropdown = ({
 
       {/* Dropdown Menu */}
       {isOpen && validNextStatuses.length > 0 && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-[#e8dfd3] rounded-lg shadow-lg z-50 min-w-[140px]">
-          <div className="py-1">
-            {validNextStatuses.map((status) => {
-              const nextStatusInfo = getStatusInfo(status);
-              return (
-                <button
-                  key={status}
-                  onClick={() => handleStatusSelect(status)}
-                  disabled={isLoading}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-[#faf8f5] transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  <span className="text-sm">{nextStatusInfo.icon}</span>
-                  <span className="text-[#592a0d]">{nextStatusInfo.label}</span>
-                  {isLoading && (
-                    <div className="ml-auto">
-                      <div className="w-3 h-3 border border-[#592a0d] border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          
-          {/* Transition Rules Info */}
-          <div className="border-t border-[#e8dfd3] px-3 py-2 bg-[#faf8f5]">
-            <p className="text-xs text-gray-600">
-              <strong>Valid transitions:</strong>
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              {validNextStatuses.map(status => getStatusInfo(status).label).join(', ')}
-            </p>
+        <div className="fixed" style={{
+          top: `${dropdownPosition.top}px`,
+          left: `${dropdownPosition.left}px`,
+          zIndex: 9999
+        }}>
+          <div className="bg-white border border-[#e8dfd3] rounded-lg shadow-lg min-w-[140px]">
+            <div className="py-1">
+              {validNextStatuses.map((status) => {
+                const nextStatusInfo = getStatusInfo(status);
+                return (
+                  <button
+                    key={status}
+                    onClick={() => handleStatusSelect(status)}
+                    disabled={isLoading}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-[#faf8f5] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    <span className="text-sm">{nextStatusInfo.icon}</span>
+                    <span className="text-[#592a0d]">{nextStatusInfo.label}</span>
+                    {isLoading && (
+                      <div className="ml-auto">
+                        <div className="w-3 h-3 border border-[#592a0d] border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Transition Rules Info */}
+            <div className="border-t border-[#e8dfd3] px-3 py-2 bg-[#faf8f5]">
+              <p className="text-xs text-gray-600">
+                <strong>Valid transitions:</strong>
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                {validNextStatuses.map(status => getStatusInfo(status).label).join(', ')}
+              </p>
+            </div>
           </div>
         </div>
       )}

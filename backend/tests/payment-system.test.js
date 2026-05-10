@@ -21,8 +21,7 @@ describe('Professional Payment System Tests', () => {
       firstName: 'Test',
       lastName: 'User',
       email: 'test@example.com',
-      password: 'password123',
-      role: 'customer'
+      password: 'password123'
     });
     await testUser.save();
 
