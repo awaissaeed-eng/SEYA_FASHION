@@ -43,26 +43,33 @@ const Footer = () => {
   };
 
   return (
-    <footer className="mt-12">
-      <div className="bg-[#592a0d] text-[#e7dcc8] mt-8">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-10">
+    <footer className="mt-8 sm:mt-10 md:mt-12">
+      <div className="bg-[#592a0d] text-[#e7dcc8]">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             {/* Left Column: Logo and Description */}
-            <div className="flex flex-col">
-              <Link to="/" className="text-2xl md:text-3xl lg:text-4xl font-serif font-semibold text-[#bfa77b] hover:text-[#e7dcc8] transition-colors mb-3">
+            <div className="flex flex-col sm:col-span-2 lg:col-span-1">
+              <Link to="/" className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold text-[#bfa77b] hover:text-[#e7dcc8] transition-colors mb-2 sm:mb-3">
                 SEYA Fashion
               </Link>
-              <p className="text-sm md:text-base lg:text-base mb-4 leading-relaxed text-[#f0e7da] max-w-md">
+              <p className="text-xs sm:text-sm md:text-base mb-3 sm:mb-4 leading-relaxed text-[#f0e7da] max-w-md">
                 Elevate your style with our exclusive collection of luxury women's clothing. Crafted with elegance and designed for the modern woman.
               </p>
               {/* Social Icons as rounded badges */}
-              <div className="flex space-x-3 mt-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 mt-2 sm:mt-4">
                 {socialLinks.map(link => {
                   const Icon = iconMap[link.icon] || ExternalLink;
                   return (
-                    <a key={link._id} href={link.url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-[#bfa77b]/10 flex items-center justify-center text-[#bfa77b] hover:bg-[#bfa77b] hover:text-[#592a0d] transition">
-                      <Icon size={16} />
+                    <a 
+                      key={link._id} 
+                      href={link.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#bfa77b]/10 flex items-center justify-center text-[#bfa77b] hover:bg-[#bfa77b] hover:text-[#592a0d] transition touch-manipulation"
+                      aria-label={link.label}
+                    >
+                      <Icon size={18} className="sm:w-5 sm:h-5" />
                     </a>
                   );
                 })}
@@ -71,11 +78,11 @@ const Footer = () => {
 
             {/* Middle Column: Quick Links */}
             <div className="flex flex-col">
-              <h3 className="text-lg md:text-2xl font-semibold text-[#bfa77b] mb-3">Quick Links</h3>
-              <ul className="space-y-2 text-sm md:text-base">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#bfa77b] mb-2 sm:mb-3">Quick Links</h3>
+              <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm md:text-base">
                 {quickLinks.map(link => (
                   <li key={link._id}>
-                    <Link to={link.url} className="hover:text-[#bfa77b] transition-colors">{link.label}</Link>
+                    <Link to={link.url} className="hover:text-[#bfa77b] transition-colors inline-block py-1">{link.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -83,14 +90,14 @@ const Footer = () => {
 
             {/* Right Column: Contact Us */}
             <div className="flex flex-col">
-              <h3 className="text-lg md:text-2xl font-semibold text-[#bfa77b] mb-3">Contact Us</h3>
-              <ul className="space-y-3 text-sm md:text-base">
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#bfa77b] mb-2 sm:mb-3">Contact Us</h3>
+              <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm md:text-base">
                 {contactLinks.map(link => {
                   const Icon = iconMap[link.icon] || ExternalLink;
                   return (
-                    <li key={link._id} className="flex items-center gap-3">
-                      <Icon size={18} className="text-[#bfa77b] flex-shrink-0" />
-                      <span className="text-[#f0e7da]">{link.label}</span>
+                    <li key={link._id} className="flex items-start gap-2 sm:gap-3">
+                      <Icon size={16} className="text-[#bfa77b] flex-shrink-0 mt-0.5 sm:w-[18px] sm:h-[18px]" />
+                      <span className="text-[#f0e7da] break-words">{link.label}</span>
                     </li>
                   );
                 })}
@@ -98,7 +105,7 @@ const Footer = () => {
             </div>
           </div>
           {/* Divider Line */}
-          <div className="border-t border-[#bfa77b]/30 mt-6 pt-6 text-center text-sm text-[#f0e7da]">
+          <div className="border-t border-[#bfa77b]/30 mt-4 sm:mt-6 pt-4 sm:pt-6 text-center text-xs sm:text-sm text-[#f0e7da]">
             © 2025 SEYA Fashion. All rights reserved. Designed with elegance.
           </div>
         </div>

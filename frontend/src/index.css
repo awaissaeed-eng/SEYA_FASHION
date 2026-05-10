@@ -5,20 +5,41 @@
 @tailwind utilities;
 
 /* Global styles */
-html, body {
+html {
   background-color: #f5f1e8;
   overflow-x: hidden;
   max-width: 100vw;
-}
-
-/* Ensure all containers don't exceed viewport width */
-* {
-  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
+  background-color: #f5f1e8;
+  overflow-x: hidden;
+  max-width: 100vw;
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure all containers don't exceed viewport width */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent images from breaking layout */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent text overflow */
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Global container styling for centered, responsive content */
