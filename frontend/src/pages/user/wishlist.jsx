@@ -116,9 +116,9 @@ export default function WishlistPage() {
 
   return (
     <UserLayout>
-      <div className="container mx-auto py-12">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -154,7 +154,7 @@ export default function WishlistPage() {
             </motion.button>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
             {wishlistProducts.map((product, index) => {
               const isOutOfStock = product.sizes && product.sizes.length > 0
                 ? product.sizes.every(s => s.quantity === 0)

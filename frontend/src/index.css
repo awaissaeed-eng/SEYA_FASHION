@@ -265,3 +265,16 @@ img {
 .product-details-content .ql-indent-3 {
   padding-left: 9em;
 }
+
+/* Product Card Actions - Hover Effect for Laptop/Desktop */
+@media (min-width: 1024px) {
+  .product-card-actions {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  
+  .group:hover .product-card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

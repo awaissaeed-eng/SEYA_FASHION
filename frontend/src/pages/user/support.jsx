@@ -118,7 +118,7 @@ export default function Support() {
     <UserLayout>
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#592a0d] to-[#3b1d0a] py-8 sm:py-12 md:py-16 lg:py-20">
-        <div className="container mx-auto">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -133,7 +133,7 @@ export default function Support() {
       </div>
 
       {/* Quick Support Options */}
-      <section className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-20">
+      <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {cards.map((card, index) => {
             const IconComp = getIcon(card.icon);
@@ -158,8 +158,8 @@ export default function Support() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto">
+      <section className="py-8 sm:py-10 md:py-12 lg:py-20">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -208,7 +208,7 @@ export default function Support() {
       </section>
 
       {/* Contact Section */}
-      <section className="container mx-auto py-12 md:py-20">
+      <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
           {/* Contact Form */}
           <motion.div
@@ -330,8 +330,8 @@ export default function Support() {
       </section>
 
       {/* Policies Section */}
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto">
+      <section className="py-8 sm:py-10 md:py-12 lg:py-20">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

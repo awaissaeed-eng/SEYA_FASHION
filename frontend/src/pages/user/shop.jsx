@@ -97,28 +97,29 @@ export default function Shop() {
   return (
     <UserLayout>
       {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-[#592a0d] to-[#3b1d0a] py-12 md:py-20">
-          <div className="container mx-auto">
+      <div className="bg-gradient-to-r from-[#592a0d] to-[#3b1d0a] py-8 sm:py-12 md:py-16 lg:py-20">
+          <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <h1 className="text-[#bfa77b] text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-4 md:mb-6">Our Collection</h1>
-              <p className="text-[#e7dcc8] text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              <h1 className="text-[#bfa77b] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-3 sm:mb-4 md:mb-6">Our Collection</h1>
+              <p className="text-[#e7dcc8] text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-4">
                 Discover timeless pieces crafted with elegance and sophistication
               </p>
             </motion.div>
           </div>
         </div>
 
-        <div className="container mx-auto py-8 md:py-12">
-          <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
             {/* Mobile Filter Toggle */}
             <div className="lg:hidden">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="w-full bg-[#592a0d] text-[#bfa77b] py-3 md:py-4 rounded-lg flex items-center justify-center gap-2 font-semibold"
+                className="w-full bg-[#592a0d] text-[#bfa77b] py-3 rounded-lg flex items-center justify-center gap-2 font-semibold text-sm sm:text-base touch-manipulation"
+                style={{ minHeight: '44px' }}
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 <span>Filters</span>
@@ -252,7 +253,7 @@ export default function Shop() {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                     {sortedProducts.map((product, index) => {
                       const imageUrl = product.images && product.images.length
                         ? product.images[0].startsWith('http')

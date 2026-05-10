@@ -135,8 +135,8 @@ export default function Checkout() {
 
   return (
     <UserLayout>
-      <div className="py-12">
-        <div className="container mx-auto max-w-7xl">
+      <div className="py-8 sm:py-10 md:py-12">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           {/* Progress Steps */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -184,9 +184,9 @@ export default function Checkout() {
           </motion.div>
 
           <form onSubmit={handleSubmit}>
-            <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
+            <div className="space-y-4 sm:space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 xl:gap-8">
               {/* Checkout Form */}
-              <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
                 {/* Shipping Information */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}

@@ -217,9 +217,9 @@ export default function ProductDetailPage() {
 
   return (
     <UserLayout>
-      <div className="container mx-auto py-12">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12">
           {/* Breadcrumb */}
-          <div className="text-sm text-[#592a0d] mb-8">
+          <div className="text-xs sm:text-sm text-[#592a0d] mb-6 sm:mb-8">
             <span className="hover:text-[#bfa77b] cursor-pointer">Home</span>
             <span className="mx-2">/</span>
             <span className="hover:text-[#bfa77b] cursor-pointer">Shop</span>
@@ -228,7 +228,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-12 mb-20">
+          <div className="space-y-6 sm:space-y-8 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-12 mb-12 sm:mb-16 md:mb-20">
             {/* Product Images */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -249,7 +249,7 @@ export default function ProductDetailPage() {
               </div>
               {/* Thumbnail Gallery */}
               {product.images && product.images.length > 1 && (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
                   {product.images.map((img, i) => (
                     <div
                       key={i}

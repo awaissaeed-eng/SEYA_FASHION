@@ -131,16 +131,16 @@ export default function Cart() {
 
   return (
     <UserLayout>
-      <div className="py-12">
-        <div className="container mx-auto max-w-7xl">
+      <div className="py-8 sm:py-10 md:py-12">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-10 md:mb-12"
           >
-            <h1 className="text-[#bfa77b] mb-2">Shopping Cart</h1>
-            <p className="text-[#592a0d]">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-[#bfa77b] mb-2">Shopping Cart</h1>
+            <p className="text-[#592a0d] text-sm sm:text-base">
               {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
             </p>
           </motion.div>
@@ -168,9 +168,9 @@ export default function Cart() {
               </button>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               {/* Cart Items */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="lg:col-span-2 space-y-3 sm:space-y-4">
                 {cartItems.map((item, index) => {
                   // Generate unique key for cookie-based cart items
                   const itemKey = `${item.product?._id || item.product}-${item.size}-${item.color}-${index}`;
@@ -181,11 +181,11 @@ export default function Cart() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+                    className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-all"
                   >
-                    <div className="flex gap-6 flex-col sm:flex-row">
+                    <div className="flex gap-4 sm:gap-5 md:gap-6 flex-col sm:flex-row">
                       {/* Product Image */}
-                      <div className="w-full sm:w-32 h-40 rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-full sm:w-28 md:w-32 h-36 sm:h-36 md:h-40 rounded-lg overflow-hidden flex-shrink-0">
                         <img
                           src={
                             item.product?.images && item.product.images.length > 0

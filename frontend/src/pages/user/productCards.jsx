@@ -63,15 +63,15 @@ const sampleProducts = [
 export default function ProductCardsPage() {
   return (
     <UserLayout>
-      <div className="container mx-auto py-12">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-[#592a0d]">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-[#592a0d]">
             Product Cards Showcase
           </h1>
-          <p className="text-[#592a0d] mt-2">A preview of our product card component in a responsive grid.</p>
+          <p className="text-[#592a0d] mt-2 text-sm sm:text-base">A preview of our product card component in a responsive grid.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {sampleProducts.map((p) => (
             <ProductCard
               key={p.id}

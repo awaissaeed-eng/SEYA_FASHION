@@ -69,7 +69,7 @@ export default function About() {
             <div className="absolute bottom-10 sm:bottom-20 right-5 sm:right-10 w-48 h-48 sm:w-96 sm:h-96 bg-[#bfa77b] rounded-full blur-3xl"></div>
           </div>
           
-          <div className="container mx-auto h-full flex items-center justify-center relative z-10">
+          <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 h-full flex items-center justify-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export default function About() {
         </div>
 
         {/* Brand Story */}
-        <section className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-20">
+        <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -128,7 +128,7 @@ export default function About() {
 
         {/* Why Choose Us */}
         <section className="py-8 sm:py-12 md:py-16 lg:py-20">
-          <div className="container mx-auto">
+          <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export default function About() {
         </section>
 
         {/* Timeline */}
-        <section className="container mx-auto py-12 md:py-20">
+        <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -202,8 +202,8 @@ export default function About() {
         </section>
 
         {/* Designer Vision */}
-        <section className="bg-gradient-to-r from-[#592a0d] to-[#3b1d0a] py-12 md:py-20">
-          <div className="container mx-auto">
+        <section className="bg-gradient-to-r from-[#592a0d] to-[#3b1d0a] py-8 sm:py-10 md:py-12 lg:py-20">
+          <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
             <div className="max-w-3xl mx-auto text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -223,7 +223,7 @@ export default function About() {
         </section>
 
         {/* Values */}
-        <section className="container mx-auto py-12 md:py-20">
+        <section className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-10 md:py-12 lg:py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

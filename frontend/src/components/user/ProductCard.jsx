@@ -112,34 +112,37 @@ const ProductCard = memo(({ id, image, title, price, category, onQuickView, size
           priority={false}
         />
 
-        {/* Hover overlay with buttons - only show if in stock */}
+        {/* Action buttons overlay - always visible on mobile/tablet, hover on laptop+ */}
         {!isOutOfStock && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            className="absolute inset-0 flex items-end justify-center pb-4 md:pb-6 bg-black/20 transition-colors duration-300"
-          >
-            <div className="flex gap-2 md:gap-4">
-              <motion.button
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#d4bd8a] text-[#592a0d] flex items-center justify-center hover:bg-[#bfa77b] transition-colors shadow-lg"
-                onClick={handleAddToCart}
-                aria-label="Add to Cart"
-              >
-                <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
-              </motion.button>
+          <>
+            {/* Background overlay - visible on mobile/tablet, hover on laptop+ */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent lg:bg-transparent lg:group-hover:bg-black/20 transition-all duration-300 pointer-events-none z-[5]"></div>
+            
+            {/* Buttons - always visible on mobile/tablet, hover on laptop+ */}
+            <div className="product-card-actions absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 sm:pb-4 md:pb-6 z-10 transition-all duration-300">
+              <div className="flex gap-2 sm:gap-3 md:gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-[#d4bd8a] text-[#592a0d] flex items-center justify-center hover:bg-[#bfa77b] transition-colors shadow-lg touch-manipulation"
+                  onClick={handleAddToCart}
+                  aria-label="Add to Cart"
+                >
+                  <ShoppingBag className="w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6" />
+                </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleQuickView}
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-[#592a0d] flex items-center justify-center hover:bg-[#f5f1e8] transition-colors shadow-lg"
-              >
-                <Eye className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleQuickView}
+                  className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-white text-[#592a0d] flex items-center justify-center hover:bg-[#f5f1e8] transition-colors shadow-lg touch-manipulation"
+                  aria-label="Quick View"
+                >
+                  <Eye className="w-5 h-5 md:w-5 md:h-5 lg:w-6 lg:h-6" />
+                </motion.button>
+              </div>
             </div>
-          </motion.div>
+          </>
         )}
 
         {/* Out of stock overlay on image - subtle effect only */}
