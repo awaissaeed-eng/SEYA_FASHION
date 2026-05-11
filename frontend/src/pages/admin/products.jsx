@@ -2,11 +2,10 @@ import { useMemo, useState, useEffect } from 'react';
 import { SizeStockInput } from '../../components/admin/SizeStockInput';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 import AdminLayout from '../../components/admin/AdminLayout';
-import { Plus, Pencil, Trash2, Search, Grid3x3, List, X, Upload, Settings } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Grid3x3, List, X, Upload } from 'lucide-react';
 import { productService } from '../../services/product';
 import { categoryService } from '../../services/category';
 import { subscriberService } from '../../services/subscriber';
-import { taxService } from '../../services/tax';
 import { useToast } from '../../components/Toast';
 import ConfirmModal from '../../components/ConfirmModal';
 import { getImageUrl } from '../../utils/imageUrl';
@@ -42,8 +41,6 @@ export default function Products() {
   const [imagePreview, setImagePreview] = useState('');
   const [showEmailConfirm, setShowEmailConfirm] = useState(false);
   const [pendingEmailData, setPendingEmailData] = useState(null);
-  const [gstSettings, setGstSettings] = useState({ gstPercentage: 0, isEnabled: false });
-  const [gstLoading, setGstLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -59,7 +56,6 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-    fetchGstSettings();
   }, []);
 
   const fetchProducts = async () => {
@@ -82,41 +78,6 @@ export default function Products() {
       setCategories(response.data.categories.filter(cat => cat.isActive));
     } catch (err) {
       console.error('Error fetching categories:', err);
-    }
-  };
-
-  const fetchGstSettings = async () => {
-    try {
-      const response = await taxService.getTaxSettings();
-      setGstSettings(response.gstSettings || response.taxSettings);
-    } catch (err) {
-      console.error('Error fetching GST settings:', err);
-    }
-  };
-
-  const handleGstUpdate = async (newGstPercentage, showAlert = false) => {
-    try {
-      setGstLoading(true);
-      const response = await taxService.updateTaxSettings({
-        gstPercentage: parseFloat(newGstPercentage) || 0,
-        isEnabled: parseFloat(newGstPercentage) > 0,
-      });
-      setGstSettings(response.gstSettings || response.taxSettings);
-      
-      if (showAlert) {
-        if (parseFloat(newGstPercentage) > 0) {
-          toast.success('GST Applied', `GST of ${newGstPercentage}% is now applied to ALL products and orders`);
-        } else {
-          toast.success('GST Removed', 'GST has been removed from ALL products and orders');
-        }
-      } else {
-        toast.success('Success', 'GST settings updated successfully');
-      }
-    } catch (err) {
-      console.error('Error updating GST settings:', err);
-      toast.error('Error', 'Failed to update GST settings');
-    } finally {
-      setGstLoading(false);
     }
   };
 
@@ -337,76 +298,6 @@ export default function Products() {
             <Plus className="w-4 h-4" />
             Add Product
           </button>
-        </div>
-
-        {/* GST Control Section */}
-        <div className="bg-white rounded-lg border border-[#e8dfd3] p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[#bfa77b]" />
-              <h3 className="text-base sm:text-lg font-semibold text-[#592a0d]">Global GST Settings</h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                gstSettings.isEnabled && gstSettings.gstPercentage > 0 
-                  ? 'bg-[#8b6f47] text-white' 
-                  : 'bg-gray-200 text-gray-600'
-              }`}>
-                {gstSettings.isEnabled && gstSettings.gstPercentage > 0 ? 'GST Enabled' : 'GST Disabled'}
-              </span>
-            </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
-              <label htmlFor="gstPercentage" className="text-sm font-medium text-[#592a0d] whitespace-nowrap">
-                GST Percentage (%):
-              </label>
-              <input
-                id="gstPercentage"
-                type="number"
-                min="0"
-                max="100"
-                step="0.1"
-                value={gstSettings.gstPercentage || gstSettings.taxAmount || 0}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  setGstSettings(prev => ({ ...prev, gstPercentage: parseFloat(newValue) || 0 }));
-                }}
-                disabled={gstLoading}
-                className="w-full sm:w-32 px-3 py-2 border border-[#e8dfd3] rounded-md focus:outline-none focus:ring-2 focus:ring-[#bfa77b] focus:border-transparent bg-white text-[#592a0d]"
-                placeholder="0"
-              />
-            </div>
-            
-            <button
-              onClick={() => handleGstUpdate(gstSettings.gstPercentage || gstSettings.taxAmount || 0, true)}
-              disabled={gstLoading}
-              className="w-full sm:w-auto px-4 py-2 bg-[#592a0d] text-white rounded-md hover:bg-[#6d3a18] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
-            >
-              {gstLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Applying...
-                </>
-              ) : (
-                <>
-                  <Settings className="w-4 h-4" />
-                  Apply GST
-                </>
-              )}
-            </button>
-          </div>
-          
-          <div className="mt-4 p-3 bg-[#faf8f5] rounded-md border border-[#e8dfd3]">
-            <p className="text-xs sm:text-sm text-[#592a0d]">
-              <strong>How it works:</strong> Set a GST percentage (e.g., 2%) that will be applied to all products. 
-              When customers purchase items, GST will be calculated as a percentage of the product price.
-            </p>
-            <p className="text-xs text-gray-600 mt-1">
-              Example: If GST is set to 2% and a product costs Rs. 1,000, then Rs. 20 GST will be added to the order.
-            </p>
-          </div>
         </div>
 
         {/* Error Message */}

@@ -31,40 +31,57 @@ const validateName = (name) => {
          /^[a-zA-Z\s'-]+$/.test(name.trim());
 };
 
-// Register User
+// Register User (ADMIN-ONLY)
+// Only admins can create new admin accounts
 exports.register = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, confirmPassword } = req.body;
+    const { firstName, lastName, email, password, confirmPassword, role } = req.body;
+
+    console.log('Registration attempt by admin:', req.userId);
+    console.log('Creating user with role:', role || 'user');
 
     // Input validation
     if (!validateName(firstName)) {
+      console.error('Registration failed: Invalid first name');
       return res.status(400).json({ message: 'Please provide a valid first name' });
     }
 
     if (!validateName(lastName)) {
+      console.error('Registration failed: Invalid last name');
       return res.status(400).json({ message: 'Please provide a valid last name' });
     }
 
     if (!validateEmail(email)) {
+      console.error('Registration failed: Invalid email');
       return res.status(400).json({ message: 'Please provide a valid email address' });
     }
 
     if (!validatePassword(password)) {
+      console.error('Registration failed: Invalid password');
       return res.status(400).json({ message: 'Password must be between 6-128 characters' });
     }
 
     if (password !== confirmPassword) {
+      console.error('Registration failed: Passwords do not match');
       return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    // Validate role if provided
+    if (role && !['user', 'admin'].includes(role)) {
+      console.error('Registration failed: Invalid role:', role);
+      return res.status(400).json({ message: 'Invalid role specified' });
     }
 
     // Sanitize inputs
     const cleanFirstName = firstName.trim();
     const cleanLastName = lastName.trim();
     const cleanEmail = email.toLowerCase().trim();
+    const userRole = role || 'user';
 
     // Check if user exists
     const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
+      console.error('Registration failed: User already exists:', cleanEmail);
       return res.status(400).json({ message: 'User already exists' });
     }
 
@@ -74,7 +91,13 @@ exports.register = async (req, res, next) => {
       lastName: cleanLastName,
       email: cleanEmail,
       password,
+      role: userRole,
     });
+
+    console.log('User created successfully:', user._id);
+    console.log('User email:', user.email);
+    console.log('User role:', user.role);
+    console.log('Created by admin:', req.userId);
 
     // Generate token
     const token = generateToken(user._id);
@@ -87,10 +110,14 @@ exports.register = async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        role: user.role,
       },
+      message: `${userRole === 'admin' ? 'Admin' : 'User'} account created successfully`,
     });
   } catch (error) {
     console.error('Registration error:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ message: 'Registration failed' });
   }
 };
@@ -140,6 +167,7 @@ exports.login = async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        role: user.role || 'user',
       },
     });
   } catch (error) {

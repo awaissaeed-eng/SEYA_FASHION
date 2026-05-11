@@ -7,6 +7,7 @@ import { ShoppingCart, Heart, Share2, Truck, Shield, RotateCcw, X } from 'lucide
 import { ImageWithFallback } from '../../components/user/ImageWithFallback';
 import UserLayout from '../../components/user/UserLayout';
 import CustomSizeForm from '../../components/user/CustomSizeForm';
+import ProductReviews from '../../components/user/ProductReviews';
 import { getImageUrl } from '../../utils/imageUrl';
 import { toggleWishlist, isInWishlist } from '../../utils/wishlist';
 import { shareProduct } from '../../utils/share';
@@ -518,6 +519,11 @@ export default function ProductDetailPage() {
           }>
             <ProductDetails details={product.details} />
           </Suspense>
+
+          {/* Product Reviews */}
+          <div className="bg-white rounded-lg p-6 sm:p-8 shadow-lg border-2 border-[#e7dcc8]">
+            <ProductReviews productId={product._id || product.id} />
+          </div>
         </div>
 
         {/* Custom Size Form Modal - Keep for fallback */}

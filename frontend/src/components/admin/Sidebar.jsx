@@ -14,6 +14,7 @@ import {
   HeadphonesIcon,
   LogOut,
   User,
+  Star,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -72,6 +73,7 @@ export default function Sidebar({ onNavigate }) {
     { id: 'orders', label: 'Orders', icon: ShoppingBag, to: '/admin/orders' },
     { id: 'products', label: 'Products', icon: Package, to: '/admin/products' },
     { id: 'categories', label: 'Categories', icon: FolderTree, to: '/admin/categories' },
+    { id: 'reviews', label: 'Reviews', icon: Star, to: '/admin/reviews' },
     { id: 'hero', label: 'Hero Section', icon: Image, to: '/admin/hero' },
     { id: 'subscribers', label: 'Subscribers', icon: Mail, to: '/admin/subscribers' },
     { id: 'links', label: 'Links', icon: Link2, to: '/admin/links' },

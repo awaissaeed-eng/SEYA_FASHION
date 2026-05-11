@@ -18,6 +18,23 @@ const gstSettingsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // Shipping charges configuration
+  shippingCharges: {
+    isEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    fixedAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    freeShippingAbove: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+  },
   updatedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

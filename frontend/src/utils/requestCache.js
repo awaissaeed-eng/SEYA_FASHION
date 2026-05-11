@@ -1,3 +1,22 @@
+// ═══════════════════════════════════════════════════════════════
+// REQUEST CACHE UTILITY
+// ═══════════════════════════════════════════════════════════════
+// 
+// ⚠️  INTERNAL UTILITY — DO NOT IMPORT DIRECTLY
+// 
+// This is a low-level caching utility used ONLY by cachedServices.js
+// 
+// ❌ DO NOT import this in components or pages:
+//    import { requestCache } from '../utils/requestCache'  // WRONG
+// 
+// ✅ Instead, use the high-level cached services:
+//    import { cachedProductService } from '../services/cachedServices'  // CORRECT
+// 
+// The cachedServices.js file wraps service calls with this cache utility
+// and provides a cleaner, more maintainable API for components.
+// 
+// ═══════════════════════════════════════════════════════════════
+
 // Request caching and deduplication utility
 class RequestCache {
   constructor() {

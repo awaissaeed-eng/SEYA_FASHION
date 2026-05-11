@@ -80,6 +80,9 @@ const Footer = () => {
             <div className="flex flex-col">
               <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#bfa77b] mb-2 sm:mb-3">Quick Links</h3>
               <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm md:text-base">
+                <li>
+                  <Link to="/track-order" className="hover:text-[#bfa77b] transition-colors inline-block py-1">Track Order</Link>
+                </li>
                 {quickLinks.map(link => (
                   <li key={link._id}>
                     <Link to={link.url} className="hover:text-[#bfa77b] transition-colors inline-block py-1">{link.label}</Link>

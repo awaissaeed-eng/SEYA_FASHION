@@ -4,9 +4,10 @@
  * Calculate order totals including GST and shipping
  * @param {number} subtotal - Subtotal amount
  * @param {Object} gstSettings - GST settings from backend
+ * @param {Object} shippingSettings - Shipping settings from backend (optional, can be part of gstSettings)
  * @returns {Object} - Calculated totals
  */
-export const calculateOrderTotals = (subtotal, gstSettings = null) => {
+export const calculateOrderTotals = (subtotal, gstSettings = null, shippingSettings = null) => {
   const subtotalAmount = parseFloat(subtotal) || 0;
   
   // Calculate GST - applies to all products when enabled
@@ -15,8 +16,20 @@ export const calculateOrderTotals = (subtotal, gstSettings = null) => {
     gstAmount = Math.round((subtotalAmount * gstSettings.gstPercentage) / 100);
   }
   
-  // Shipping is set to 0 as requested
-  const shippingAmount = 0;
+  // Calculate shipping charges
+  let shippingAmount = 0;
+  
+  // Use shippingSettings if provided separately, otherwise check if it's in gstSettings
+  const shipping = shippingSettings || gstSettings?.shippingCharges;
+  
+  if (shipping && shipping.isEnabled) {
+    // Check if order qualifies for free shipping
+    if (shipping.freeShippingAbove > 0 && subtotalAmount >= shipping.freeShippingAbove) {
+      shippingAmount = 0; // Free shipping above threshold
+    } else {
+      shippingAmount = parseFloat(shipping.fixedAmount) || 0;
+    }
+  }
   
   // Calculate total
   const totalAmount = subtotalAmount + gstAmount + shippingAmount;

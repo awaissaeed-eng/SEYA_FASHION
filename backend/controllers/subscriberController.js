@@ -1,6 +1,6 @@
 const Subscriber = require('../models/subscriber');
 const EmailLog = require('../models/emailLog');
-const { sendNotificationToSubscribers, isEmailConfigured, BRAND } = require('../utils/emailService');
+const { sendNotificationToSubscribers, isEmailConfigured, BRAND } = require('../utils/email');
 
 // Subscribe a new email
 exports.subscribe = async (req, res) => {

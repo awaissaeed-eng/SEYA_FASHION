@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
 const { createLog } = require('./activityLogController');
-const { sendNotificationToSubscribers } = require('../utils/emailService');
+const { sendNotificationToSubscribers } = require('../utils/email');
 const { uploadToCloudinary, deleteFromCloudinary, deleteMultipleFromCloudinary, getPublicIdFromUrl } = require('../config/cloudinary');
 const { validateSearchInput, escapeRegex, validateSortField } = require('../middleware/securityMiddleware');
 

@@ -6,7 +6,7 @@ import OrdersFilters from '../../components/admin/OrdersFilters';
 import OrderDetailsModal from '../../components/admin/OrderDetailsModal';
 import { useToast } from '../../components/Toast';
 import { formatCustomerName } from '../../utils/addressFormatter';
-import { getStatusInfo } from '../../utils/orderStatusRules';
+import { getStatusInfo } from '../../utils/orderStatusDisplay';
 import { handleApiError } from '../../utils/errorHandler';
 import { ORDER_STATUS_ORDER } from '../../config/constants';
 import { tw, fontStyles } from '../../config/theme';

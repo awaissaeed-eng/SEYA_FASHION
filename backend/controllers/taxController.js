@@ -11,6 +11,11 @@ exports.getGstSettings = async (req, res) => {
       gstSettings = new TaxSettings({
         gstPercentage: 0,
         isEnabled: false,
+        shippingCharges: {
+          isEnabled: false,
+          fixedAmount: 0,
+          freeShippingAbove: 0,
+        },
       });
       await gstSettings.save();
     }
@@ -29,7 +34,7 @@ exports.getGstSettings = async (req, res) => {
 // Update GST settings (admin only)
 exports.updateGstSettings = async (req, res) => {
   try {
-    const { gstPercentage, isEnabled, taxAmount } = req.body;
+    const { gstPercentage, isEnabled, taxAmount, shippingCharges } = req.body;
 
     // Handle backward compatibility - if taxAmount is provided, treat it as 0% GST
     let percentage = gstPercentage;
@@ -39,8 +44,18 @@ exports.updateGstSettings = async (req, res) => {
     }
 
     // Validate GST percentage
-    if (percentage < 0 || percentage > 100) {
+    if (percentage !== undefined && (percentage < 0 || percentage > 100)) {
       return res.status(400).json({ message: 'GST percentage must be between 0 and 100' });
+    }
+
+    // Validate shipping charges if provided
+    if (shippingCharges) {
+      if (shippingCharges.fixedAmount !== undefined && shippingCharges.fixedAmount < 0) {
+        return res.status(400).json({ message: 'Shipping amount cannot be negative' });
+      }
+      if (shippingCharges.freeShippingAbove !== undefined && shippingCharges.freeShippingAbove < 0) {
+        return res.status(400).json({ message: 'Free shipping threshold cannot be negative' });
+      }
     }
 
     let gstSettings = await TaxSettings.findOne();
@@ -49,11 +64,33 @@ exports.updateGstSettings = async (req, res) => {
       gstSettings = new TaxSettings({
         gstPercentage: percentage || 0,
         isEnabled: isEnabled || false,
+        shippingCharges: shippingCharges || {
+          isEnabled: false,
+          fixedAmount: 0,
+          freeShippingAbove: 0,
+        },
         updatedBy: req.userId,
       });
     } else {
       gstSettings.gstPercentage = percentage !== undefined ? percentage : gstSettings.gstPercentage;
       gstSettings.isEnabled = isEnabled !== undefined ? isEnabled : gstSettings.isEnabled;
+      
+      // Update shipping charges if provided
+      if (shippingCharges) {
+        if (!gstSettings.shippingCharges) {
+          gstSettings.shippingCharges = {};
+        }
+        gstSettings.shippingCharges.isEnabled = shippingCharges.isEnabled !== undefined 
+          ? shippingCharges.isEnabled 
+          : gstSettings.shippingCharges.isEnabled;
+        gstSettings.shippingCharges.fixedAmount = shippingCharges.fixedAmount !== undefined 
+          ? shippingCharges.fixedAmount 
+          : gstSettings.shippingCharges.fixedAmount;
+        gstSettings.shippingCharges.freeShippingAbove = shippingCharges.freeShippingAbove !== undefined 
+          ? shippingCharges.freeShippingAbove 
+          : gstSettings.shippingCharges.freeShippingAbove;
+      }
+      
       gstSettings.updatedBy = req.userId;
     }
 
@@ -61,13 +98,22 @@ exports.updateGstSettings = async (req, res) => {
 
     // Log activity
     if (req.userId) {
+      const logMessage = [];
+      if (percentage !== undefined) logMessage.push(`GST: ${percentage}%`);
+      if (isEnabled !== undefined) logMessage.push(`GST Enabled: ${isEnabled}`);
+      if (shippingCharges) {
+        logMessage.push(`Shipping: ${shippingCharges.isEnabled ? 'Enabled' : 'Disabled'}`);
+        if (shippingCharges.fixedAmount !== undefined) logMessage.push(`Amount: PKR ${shippingCharges.fixedAmount}`);
+        if (shippingCharges.freeShippingAbove !== undefined) logMessage.push(`Free above: PKR ${shippingCharges.freeShippingAbove}`);
+      }
+      
       await createLog(
         req.userId, 
-        'gst_settings_updated', 
-        `Updated GST settings: ${percentage}%, Enabled: ${isEnabled}`, 
+        'tax_settings_updated', 
+        `Updated settings: ${logMessage.join(', ')}`, 
         'settings', 
         gstSettings._id, 
-        'GST Settings'
+        'Tax & Shipping Settings'
       );
     }
 

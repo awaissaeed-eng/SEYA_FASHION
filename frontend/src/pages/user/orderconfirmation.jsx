@@ -471,6 +471,13 @@ export default function OrderConfirmation() {
                     Download Invoice
                   </button>
                   <button
+                    onClick={() => window.location.href = `/track-order?orderId=${order?.orderId || order?._id}`}
+                    className="w-full bg-[#bfa77b] text-[#592a0d] py-3 rounded-full hover:bg-[#d4a574] transition-all flex items-center justify-center gap-2"
+                  >
+                    Track Your Order
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                  <button
                     onClick={() => window.location.href = '/shop'}
                     className="w-full bg-[#f5f1e8] text-[#592a0d] py-3 rounded-full hover:bg-[#e7dcc8] transition-all flex items-center justify-center gap-2"
                   >

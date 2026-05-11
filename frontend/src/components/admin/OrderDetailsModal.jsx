@@ -1,11 +1,12 @@
 import { X, Download, Printer, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import InlineStatusDropdown from './InlineStatusDropdown';
 import CustomSizeDisplay from '../user/CustomSizeDisplay';
 import { formatShippingInfo } from '../../utils/addressFormatter';
-import { getStatusInfo } from '../../utils/orderStatusRules';
+import { getStatusInfo } from '../../utils/orderStatusDisplay';
 import { getPaymentStatusInfo, getPaymentMethodInfo, formatPaymentDate, getPaymentGatewayInfo } from '../../utils/paymentStatusRules';
 import { tw } from '../../config/theme';
+import { orderService } from '../../services/order';
 
 const OrderDetailsModal = ({
   order,
@@ -15,8 +16,30 @@ const OrderDetailsModal = ({
   onStatusChange
 }) => {
   const [showGatewayResponse, setShowGatewayResponse] = useState(false);
+  const [validNextStatuses, setValidNextStatuses] = useState([]);
+  const [loadingStatuses, setLoadingStatuses] = useState(true);
   
   if (!order) return null;
+
+  // Fetch valid next statuses when order changes
+  useEffect(() => {
+    const fetchValidStatuses = async () => {
+      if (!order || !order._id) return;
+      
+      setLoadingStatuses(true);
+      try {
+        const response = await orderService.getValidNextStatuses(order._id);
+        setValidNextStatuses(response.data.validNextStatuses || []);
+      } catch (error) {
+        console.error('Failed to fetch valid statuses:', error);
+        setValidNextStatuses([]);
+      } finally {
+        setLoadingStatuses(false);
+      }
+    };
+
+    fetchValidStatuses();
+  }, [order?._id, order?.status]);
 
   const shippingInfo = formatShippingInfo(order);
   const paymentMethodInfo = getPaymentMethodInfo(order.paymentMethod, order.paymentInfo);
@@ -76,11 +99,19 @@ const OrderDetailsModal = ({
           <div className="space-y-3">
             <label className={`block text-sm font-medium ${tw.primaryText}`}>Order Status</label>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <InlineStatusDropdown
-                currentStatus={order.status}
-                orderId={order._id}
-                onStatusChange={onStatusChange}
-              />
+              {loadingStatuses ? (
+                <div className="flex items-center gap-2 px-3 py-1">
+                  <div className="w-4 h-4 border border-[#592a0d] border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm text-gray-600">Loading statuses...</span>
+                </div>
+              ) : (
+                <InlineStatusDropdown
+                  currentStatus={order.status}
+                  orderId={order._id}
+                  validNextStatuses={validNextStatuses}
+                  onStatusChange={onStatusChange}
+                />
+              )}
               <div className="text-xs sm:text-sm text-gray-600">
                 {getStatusInfo(order.status).description}
               </div>

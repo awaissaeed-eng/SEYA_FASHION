@@ -1,7 +1,51 @@
 import { Eye, Printer, Download, Package, User, Calendar, CreditCard } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import InlineStatusDropdown from './InlineStatusDropdown';
 import { getPaymentStatusInfo, getPaymentMethodInfo } from '../../utils/paymentStatusRules';
 import { tw } from '../../config/theme';
+import { orderService } from '../../services/order';
+
+// Wrapper component to fetch valid statuses for each order
+const StatusDropdownWithFetch = ({ currentStatus, orderId, onStatusChange }) => {
+  const [validNextStatuses, setValidNextStatuses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchValidStatuses = async () => {
+      if (!orderId) return;
+      
+      setLoading(true);
+      try {
+        const response = await orderService.getValidNextStatuses(orderId);
+        setValidNextStatuses(response.data.validNextStatuses || []);
+      } catch (error) {
+        console.error('Failed to fetch valid statuses:', error);
+        setValidNextStatuses([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchValidStatuses();
+  }, [orderId, currentStatus]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1">
+        <div className="w-3 h-3 border border-[#592a0d] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <InlineStatusDropdown
+      currentStatus={currentStatus}
+      orderId={orderId}
+      validNextStatuses={validNextStatuses}
+      onStatusChange={onStatusChange}
+    />
+  );
+};
 
 const OrdersTable = ({ 
   orders, 
@@ -141,7 +185,7 @@ const OrderRow = ({
       </td>
       
       <td className="px-6 py-4 text-sm">
-        <InlineStatusDropdown
+        <StatusDropdownWithFetch
           currentStatus={order.status}
           orderId={order._id}
           onStatusChange={onStatusChange}
@@ -213,7 +257,7 @@ const OrderCard = ({
             {paymentStatusInfo.label}
           </span>
           <div>
-            <InlineStatusDropdown
+            <StatusDropdownWithFetch
               currentStatus={order.status}
               orderId={order._id}
               onStatusChange={onStatusChange}

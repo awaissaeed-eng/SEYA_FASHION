@@ -1,10 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, Lock } from 'lucide-react';
-import { getStatusInfo, getValidNextStatuses, isTerminalStatus } from '../../utils/orderStatusRules';
+import { getStatusInfo } from '../../utils/orderStatusDisplay';
 
+/**
+ * InlineStatusDropdown Component
+ * 
+ * Displays order status with dropdown to change to valid next statuses.
+ * 
+ * IMPORTANT: validNextStatuses MUST be fetched from backend API.
+ * Do NOT calculate valid transitions in frontend - this is business logic
+ * that belongs only in backend/utils/orderStatusRules.js
+ * 
+ * Example API call to get valid next statuses:
+ * GET /api/orders/:orderId/valid-statuses
+ * 
+ * @param {string} currentStatus - Current order status
+ * @param {string} orderId - Order ID
+ * @param {string[]} validNextStatuses - Valid next statuses (from backend API)
+ * @param {function} onStatusChange - Callback when status changes
+ * @param {boolean} disabled - Whether dropdown is disabled
+ */
 const InlineStatusDropdown = ({ 
   currentStatus, 
-  orderId, 
+  orderId,
+  validNextStatuses = [], // MUST be fetched from backend API
   onStatusChange, 
   disabled = false 
 }) => {
@@ -14,8 +33,7 @@ const InlineStatusDropdown = ({
   const dropdownRef = useRef(null);
 
   const statusInfo = getStatusInfo(currentStatus);
-  const validNextStatuses = getValidNextStatuses(currentStatus);
-  const isTerminal = isTerminalStatus(currentStatus);
+  const isTerminal = validNextStatuses.length === 0; // Terminal if no valid next statuses
 
   // Update dropdown position
   const updatePosition = () => {

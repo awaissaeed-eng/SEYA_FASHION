@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { optimizedCartService } from '../../services/optimizedCart';
 import { getWishlistCount } from '../../utils/wishlist';
 import { Link } from 'react-router-dom';
-import { Search, ShoppingCart, Heart } from 'lucide-react';
+import { Search, ShoppingCart, Heart, Package } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
 const Header = () => {
@@ -98,6 +98,17 @@ const Header = () => {
                 <Search className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
+
+            {/* Track Order */}
+            <Link 
+              to="/track-order" 
+              className="hover:text-[#e7dcc8] transition-colors p-1.5 sm:p-2 rounded-full hover:bg-[#bfa77b]/10 flex items-center justify-center touch-manipulation" 
+              aria-label="Track Order"
+              title="Track Order"
+              style={{ minWidth: '44px', minHeight: '44px' }}
+            >
+              <Package className="w-5 h-5 sm:w-6 sm:h-6" />
+            </Link>
 
             {/* Wishlist */}
             <Link 

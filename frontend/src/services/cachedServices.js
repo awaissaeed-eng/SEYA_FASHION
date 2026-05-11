@@ -1,4 +1,26 @@
-// Cached versions of services for better performance
+// ═══════════════════════════════════════════════════════════════
+// CACHED SERVICES - Main Caching API
+// ═══════════════════════════════════════════════════════════════
+// 
+// This is the PRIMARY way to use cached API calls in components.
+// 
+// ✅ USE THIS in components and pages:
+//    import { cachedProductService } from '../services/cachedServices'
+//    const products = await cachedProductService.getAll()
+// 
+// Benefits:
+// - Automatic caching with configurable TTL
+// - Request deduplication (prevents duplicate API calls)
+// - Cache invalidation helpers
+// - Preload critical data on app startup
+// 
+// Architecture:
+// - Uses requestCache.js as internal utility (low-level)
+// - Wraps service calls with caching logic (high-level)
+// - Provides clean API for components
+// 
+// ═══════════════════════════════════════════════════════════════
+
 import { createCachedService } from '../utils/requestCache';
 import { productService } from './product';
 import { categoryService } from './category';

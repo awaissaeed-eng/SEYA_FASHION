@@ -83,6 +83,10 @@ app.use((req, res, next) => {
 // Serve uploads folder for images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Maintenance Mode Middleware (MUST be before other routes)
+const maintenanceMiddleware = require('./middleware/maintenanceMiddleware');
+app.use(maintenanceMiddleware);
+
 // Root route
 app.get('/', (req, res) => {
   res.json({ 
@@ -104,6 +108,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/maintenance', require('./routes/maintenanceRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/footer-links', require('./routes/footerLinkRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
@@ -117,6 +122,7 @@ app.use('/api/subscribers', require('./routes/subscriberRoutes'));
 app.use('/api/hero', require('./routes/heroRoutes'));
 app.use('/api/support', require('./routes/supportRoutes'));
 app.use('/api/tax', require('./routes/taxRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
 
 // 404 handler
 app.use((req, res) => {

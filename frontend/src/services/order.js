@@ -4,8 +4,9 @@ export const orderService = {
   async getUserOrders() {
     return api.get('/orders/user/my-orders');
   },
-  async getOrderById(id) {
-    return api.get(`/orders/${id}`);
+  async getOrderById(id, queryParams = '') {
+    const url = queryParams ? `/orders/${id}?${queryParams}` : `/orders/${id}`;
+    return api.get(url);
   },
   async createOrder(orderData) {
     return api.post('/orders', orderData);

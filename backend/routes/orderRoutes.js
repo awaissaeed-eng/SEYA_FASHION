@@ -12,9 +12,10 @@ const {
   getValidNextStatuses,
 } = require('../controllers/orderController');
 const { verifyToken } = require('../middleware/authMiddleware');
+const { validateOrder } = require('../middleware/orderValidation');
 
 // Public routes - no authentication
-router.post('/', createOrder); // Create order - 100% public
+router.post('/', validateOrder, createOrder); // Create order - 100% public with validation
 router.get('/:id', getOrderById); // View order - 100% public
 router.put('/:id/cancel', cancelOrder); // Cancel order - 100% public
 

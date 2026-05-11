@@ -1,6 +1,6 @@
 const Category = require('../models/category');
 const { createLog } = require('./activityLogController');
-const { sendNotificationToSubscribers } = require('../utils/emailService');
+const { sendNotificationToSubscribers } = require('../utils/email');
 const { uploadToCloudinary, deleteFromCloudinary, getPublicIdFromUrl } = require('../config/cloudinary');
 
 // Get all categories

@@ -1,5 +1,6 @@
 const Order = require('../models/order');
 const Payment = require('../models/payment');
+const Product = require('../models/product');
 const { createLog } = require('./activityLogController');
 const crypto = require('crypto');
 const axios = require('axios');
@@ -139,7 +140,11 @@ exports.initiatePayment = async (req, res) => {
       payment.paidAt = new Date();
       await payment.save();
 
-      // Update order payment status if orderId provided
+      // ═══════════════════════════════════════════════════════
+      // UPDATE ORDER PAYMENT STATUS
+      // Stock was already reserved when order was created
+      // No need to reduce stock again
+      // ═══════════════════════════════════════════════════════
       if (orderId) {
         const order = await Order.findById(orderId);
         if (order) {
@@ -148,7 +153,10 @@ exports.initiatePayment = async (req, res) => {
           order.paymentDate = new Date();
           order.gatewayResponse = 'MOCK: Auto-approved for testing';
           await order.save();
-          console.log('Order payment status updated:', orderId);
+          console.log('Order payment status updated to PAID:', orderId);
+          console.log('Stock was already reserved when order was created');
+        } else {
+          console.error('Order not found for payment:', orderId);
         }
       }
 
@@ -172,7 +180,8 @@ exports.initiatePayment = async (req, res) => {
           status: 'paid',
           amount: customerInfo.amount,
           paymentMethod: paymentMethod,
-          gatewayTransactionId: `MOCK_${transactionId}`
+          gatewayTransactionId: `MOCK_${transactionId}`,
+          orderId: orderId
         },
         message: 'Payment approved (MOCK mode for testing)'
       });
@@ -392,10 +401,10 @@ exports.handleWebhook = async (req, res) => {
     console.log(`Payment ${transactionId} updated: ${previousStatus} → ${payment.status}`);
 
     // ─────────────────────────────────────────────────────────
-    // UPDATE ORDER STATUS
+    // UPDATE ORDER STATUS AND HANDLE STOCK
     // ─────────────────────────────────────────────────────────
     if (payment.orderId) {
-      const order = await Order.findById(payment.orderId);
+      const order = await Order.findById(payment.orderId).populate('products.product');
       
       if (order) {
         if (payment.status === 'paid') {
@@ -403,11 +412,79 @@ exports.handleWebhook = async (req, res) => {
           order.transactionId = transactionId;
           order.paymentDate = new Date();
           order.gatewayResponse = JSON.stringify(req.body);
+          await order.save();
+          
+          console.log('Order payment status updated to PAID (webhook):', order._id);
+          console.log('Stock was already reserved when order was created');
         } else if (payment.status === 'failed') {
           order.paymentStatus = 'failed';
+          await order.save();
+          
+          // ═══════════════════════════════════════════════════════
+          // RESTORE STOCK FOR FAILED PAYMENT
+          // ═══════════════════════════════════════════════════════
+          console.log('Payment failed - restoring reserved stock for order:', order._id);
+          
+          for (let item of order.products) {
+            // Skip stock restoration for custom size items
+            if (item.isCustomSize || item.customSize?.isCustom) {
+              console.log(`Skipping stock restoration for custom size item: ${item.productSnapshot?.name}`);
+              continue;
+            }
+
+            const productDoc = await Product.findById(item.product);
+            if (productDoc) {
+              // Restore the specific size quantity
+              if (productDoc.sizes && productDoc.sizes.length > 0 && item.size && item.size !== 'Standard' && item.size !== 'Custom Size') {
+                // Check if size exists
+                const sizeExists = productDoc.sizes.find(s => s.size === item.size);
+                
+                if (sizeExists) {
+                  // Size exists, increment quantity
+                  await Product.findOneAndUpdate(
+                    { 
+                      _id: item.product,
+                      'sizes.size': item.size
+                    },
+                    {
+                      $inc: {
+                        'sizes.$.quantity': item.quantity,
+                        stock: item.quantity
+                      }
+                    }
+                  );
+                } else {
+                  // Size was removed (was 0), add it back
+                  await Product.findByIdAndUpdate(
+                    item.product,
+                    {
+                      $push: { sizes: { size: item.size, quantity: item.quantity } },
+                      $inc: { stock: item.quantity }
+                    }
+                  );
+                }
+                
+                console.log(`Stock restored for ${productDoc.name}, size ${item.size}: +${item.quantity}`);
+              } else {
+                // No sizes, just increment stock
+                await Product.findByIdAndUpdate(
+                  item.product,
+                  { $inc: { stock: item.quantity } }
+                );
+                console.log(`Stock restored for ${productDoc.name}: +${item.quantity}`);
+              }
+              
+              // Update product status if it was OUT_OF_STOCK
+              const updatedProduct = await Product.findById(item.product);
+              if (updatedProduct.status === 'OUT_OF_STOCK' && updatedProduct.stock > 0) {
+                updatedProduct.status = 'ACTIVE';
+                await updatedProduct.save();
+                console.log(`Product ${productDoc.name} status changed from OUT_OF_STOCK to ACTIVE`);
+              }
+            }
+          }
         }
         
-        await order.save();
         console.log('Order payment status updated:', order._id);
       }
     }
