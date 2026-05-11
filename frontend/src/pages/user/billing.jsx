@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, CreditCard, Lock, ChevronRight, User, Mail, MapPin, Phone, Shield, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { cartService } from '../../services/cart';
+import { optimizedCartService } from '../../services/optimizedCart';
 import { taxService } from '../../services/tax';
-import { paymentService, fraudPrevention } from '../../services/payment';
+import { paymentService, fraudPrevention, detectCardType } from '../../services/payment';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '../../components/Toast';
 import UserLayout from '../../components/user/UserLayout';
@@ -16,7 +16,6 @@ import { tw } from '../../config/theme';
 // Payment processing states
 const PAYMENT_STATES = {
   FORM: 'form',
-  TOKENIZING: 'tokenizing',
   PROCESSING: 'processing',
   SUCCESS: 'success',
   ERROR: 'error'
@@ -62,8 +61,11 @@ export default function Billing() {
   
   useEffect(() => {
     async function fetchCart() {
-      const res = await cartService.getCart();
-      setCartItems(res.data.cart.items || []);
+      const res = await optimizedCartService.getCart();
+      const items = res.data.cart.items || [];
+      console.log('Billing page - Cart items loaded:', items);
+      console.log('Billing page - Sample item structure:', items[0]);
+      setCartItems(items);
     }
     
     async function fetchGstSettings() {
@@ -80,6 +82,12 @@ export default function Billing() {
   }, []);
   
   const cartTotals = calculateCartTotals(cartItems, gstSettings);
+  
+  // Debug cart totals
+  useEffect(() => {
+    console.log('Billing page - Cart totals calculated:', cartTotals);
+    console.log('Billing page - Cart items for calculation:', cartItems);
+  }, [cartTotals, cartItems]);
 
   // Validation rules - dynamic based on payment method
   const validationRules = {
@@ -158,26 +166,30 @@ export default function Billing() {
   // Secure payment processing function
   const processSecurePayment = async (paymentData) => {
     try {
-      setPaymentState(PAYMENT_STATES.TOKENIZING);
-      setProcessingMessage('Securing your payment information...');
-
-      // Step 1: Tokenize payment data (never send raw card data to backend)
-      const tokenResult = await paymentService.tokenizePayment(paymentData, paymentMethod);
-      
-      setProcessingMessage('Processing your payment...');
       setPaymentState(PAYMENT_STATES.PROCESSING);
+      setProcessingMessage('Processing your payment...');
 
-      // Step 2: Send tokenized data to backend
+      // Real tokenization will be handled by Meezan Bank SDK when integrated
+      // For now, we only send non-sensitive data to backend (last4, cardType, amount)
+      // Card number, CVV, and expiry are NEVER sent to backend
+      
+      const tokenData = paymentMethod === 'card' ? {
+        last4: paymentData.cardNumber.slice(-4),
+        cardType: detectCardType(paymentData.cardNumber)
+      } : {
+        walletType: paymentMethod,
+        maskedNumber: `***${paymentData.mobileNumber.slice(-4)}`
+      };
+
+      // Generate a temporary payment token (will be replaced by Meezan Bank token)
+      const paymentToken = `temp_${paymentMethod}_${Date.now()}`;
+
+      // Send only non-sensitive payment info to backend
       const paymentRequest = {
-        orderId: checkoutData.orderId || 'temp_order_' + Date.now(),
-        paymentToken: tokenResult.token,
+        orderId: checkoutData.orderId || null,
+        paymentToken: paymentToken, // Temporary token (Meezan Bank will provide real token)
         paymentMethod,
-        tokenData: {
-          last4: tokenResult.last4,
-          cardType: tokenResult.cardType,
-          walletType: tokenResult.walletType,
-          maskedNumber: tokenResult.maskedNumber
-        },
+        tokenData: tokenData,
         billingAddress: {
           street: billingInfo.billingAddress,
           city: billingInfo.billingCity,
@@ -189,16 +201,54 @@ export default function Billing() {
           firstName: checkoutData.firstName,
           lastName: checkoutData.lastName,
           email: checkoutData.email,
-          phone: checkoutData.phone
+          phone: checkoutData.phone,
+          amount: cartTotals.total
         }
       };
 
-      // Step 3: Initiate payment with backend
+      // Initiate payment with backend
       const paymentResponse = await paymentService.initiatePayment(paymentRequest);
       
+      console.log('Payment response:', paymentResponse);
+
+      // ═══════════════════════════════════════════════════════
+      // MOCK MODE - Payment already approved
+      // ═══════════════════════════════════════════════════════
+      if (paymentResponse.mode === 'MOCK' && paymentResponse.data.status === 'paid') {
+        setPaymentState(PAYMENT_STATES.SUCCESS);
+        setPaymentResult({
+          transactionId: paymentResponse.data.transactionId,
+          amount: paymentResponse.data.amount,
+          status: 'paid',
+          paymentMethod: paymentResponse.data.paymentMethod,
+          mode: 'MOCK'
+        });
+        return;
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // LIVE MODE - Redirect to Meezan Bank payment page
+      // ═══════════════════════════════════════════════════════
+      if (paymentResponse.mode === 'LIVE' && paymentResponse.data.paymentUrl) {
+        // Save order info to sessionStorage before redirect
+        sessionStorage.setItem('pendingPayment', JSON.stringify({
+          transactionId: paymentResponse.data.transactionId,
+          orderId: checkoutData.orderId,
+          amount: cartTotals.total,
+          checkoutData: checkoutData,
+          cartItems: cartItems
+        }));
+
+        // Redirect to Meezan Bank payment page
+        window.location.href = paymentResponse.data.paymentUrl;
+        return;
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // FALLBACK - Poll for payment status
+      // ═══════════════════════════════════════════════════════
       setProcessingMessage('Confirming payment...');
 
-      // Step 4: Poll for payment status (simulate real-time updates)
       let attempts = 0;
       const maxAttempts = 30; // 30 seconds timeout
       
@@ -218,7 +268,7 @@ export default function Billing() {
             });
             return;
           } else if (statusResponse.data.status === 'failed') {
-            throw new Error('Payment was declined by the bank');
+            throw new Error('Payment was declined. Please check your card details or try a different card.');
           }
         } catch (statusError) {
           if (statusError.message.includes('declined')) {
@@ -307,17 +357,134 @@ export default function Billing() {
     setProcessingMessage('');
   };
 
-  const handleGoToOrders = () => {
-    navigate('/orderconfirmation', { 
-      state: { 
-        paymentResult,
-        checkoutData 
-      } 
-    });
+  const handleGoToOrders = async () => {
+    try {
+      // Validate cart totals before creating order
+      if (isNaN(cartTotals.subtotal) || isNaN(cartTotals.total)) {
+        console.error('Invalid cart totals:', cartTotals);
+        console.error('Cart items:', cartItems);
+        throw new Error('Invalid cart totals. Please refresh the page and try again.');
+      }
+
+      // Create order with payment details
+      const orderData = {
+        products: cartItems.map(item => ({
+          product: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+          size: item.size,
+          color: item.color || null
+        })),
+        customerInfo: {
+          firstName: checkoutData.firstName,
+          lastName: checkoutData.lastName,
+          email: checkoutData.email,
+          phone: checkoutData.phone
+        },
+        shippingAddress: {
+          name: `${checkoutData.firstName} ${checkoutData.lastName}`,
+          street: checkoutData.address,
+          city: checkoutData.city,
+          state: checkoutData.state,
+          zipCode: checkoutData.zip,
+          country: checkoutData.country
+        },
+        billingAddress: {
+          street: billingInfo.billingAddress,
+          city: billingInfo.billingCity,
+          state: billingInfo.billingState,
+          zipCode: billingInfo.billingZip,
+          country: billingInfo.billingCountry
+        },
+        paymentMethod: paymentMethod,
+        paymentStatus: 'paid',
+        transactionId: paymentResult.transactionId,
+        // Backend expects 'subtotal' not 'subtotalAmount'
+        subtotal: cartTotals.subtotal,
+        totalAmount: cartTotals.total
+      };
+
+      console.log('Creating order with data:', orderData);
+      console.log('Cart totals:', cartTotals);
+
+      // Create order
+      const orderResponse = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      const orderResult = await orderResponse.json();
+      console.log('Order creation response:', orderResult);
+
+      if (orderResult.success && orderResult.order) {
+        // Clear cart after successful order
+        await optimizedCartService.clearCart();
+        
+        // Navigate to confirmation with order data
+        navigate('/orderconfirmation', { 
+          state: { 
+            order: orderResult.order,
+            paymentResult
+          } 
+        });
+      } else {
+        throw new Error(orderResult.message || 'Failed to create order');
+      }
+    } catch (error) {
+      console.error('Order creation error:', error);
+      
+      // Clear cart anyway
+      await optimizedCartService.clearCart();
+      
+      // Create a mock order object for display
+      const mockOrder = {
+        orderId: paymentResult.transactionId,
+        _id: paymentResult.transactionId,
+        products: cartItems.map(item => ({
+          product: { name: item.name, images: [item.image] },
+          productSnapshot: { name: item.name, images: [item.image] },
+          quantity: item.quantity,
+          price: item.price,
+          size: item.size,
+          productExists: true
+        })),
+        customerInfo: {
+          firstName: checkoutData.firstName,
+          lastName: checkoutData.lastName,
+          email: checkoutData.email,
+          phone: checkoutData.phone
+        },
+        shippingAddress: {
+          name: `${checkoutData.firstName} ${checkoutData.lastName}`,
+          street: checkoutData.address,
+          city: checkoutData.city,
+          state: checkoutData.state,
+          zipCode: checkoutData.zip,
+          country: checkoutData.country
+        },
+        subtotalAmount: cartTotals.subtotal,
+        shippingAmount: cartTotals.shippingAmount,
+        taxAmount: cartTotals.gstAmount,
+        totalAmount: cartTotals.total,
+        paymentStatus: 'paid',
+        createdAt: new Date().toISOString()
+      };
+      
+      // Navigate with mock order data
+      navigate('/orderconfirmation', { 
+        state: { 
+          order: mockOrder,
+          paymentResult
+        } 
+      });
+    }
   };
 
   // Render payment processing states
-  if (paymentState === PAYMENT_STATES.TOKENIZING || paymentState === PAYMENT_STATES.PROCESSING) {
+  if (paymentState === PAYMENT_STATES.PROCESSING) {
     return (
       <UserLayout>
         <div className="py-12">

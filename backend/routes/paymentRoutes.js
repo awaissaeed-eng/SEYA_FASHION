@@ -4,9 +4,9 @@ const {
   // New secure payment endpoints
   initiatePayment,
   verifyPayment,
-  getPaymentStatus
+  getPaymentStatus,
+  handleWebhook
 } = require('../controllers/paymentController');
-const { verifyToken } = require('../middleware/authMiddleware');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting for payment endpoints
@@ -19,14 +19,12 @@ const paymentRateLimit = rateLimit({
   }
 });
 
-// New secure payment endpoints
-// Payment initiation (requires authentication)
-router.post('/initiate', paymentRateLimit, verifyToken, initiatePayment);
-
-// Payment verification (webhook endpoint - no auth required)
+// Payment endpoints - 100% public, no authentication
+router.post('/initiate', paymentRateLimit, initiatePayment);
 router.post('/verify/:transactionId', verifyPayment);
+router.get('/status/:transactionId', getPaymentStatus);
 
-// Get payment status (requires authentication)
-router.get('/status/:transactionId', verifyToken, getPaymentStatus);
+// Webhook from Meezan Bank - no auth, signature verified inside
+router.post('/webhook', handleWebhook);
 
 module.exports = router;

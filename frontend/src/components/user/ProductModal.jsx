@@ -169,8 +169,8 @@ export function ProductModal({ isOpen, product, onClose }) {
                           const { _id, id } = product;
                           // Use selected size or get a random available size
                           const sizeToAdd = selectedSize || getRandomAvailableSize();
-                          await import('../../services/cart').then(({ cartService }) => {
-                            cartService.addToCart({ productId: _id || id, quantity: 1, size: sizeToAdd });
+                          await import('../../services/optimizedCart').then(({ optimizedCartService }) => {
+                            optimizedCartService.addToCart({ productId: _id || id, quantity: 1, size: sizeToAdd });
                           });
                           window.dispatchEvent(new Event('cartUpdated'));
                           onClose();

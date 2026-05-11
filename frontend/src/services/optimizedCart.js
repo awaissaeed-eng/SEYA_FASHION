@@ -1,171 +1,176 @@
-// Optimized cart service with batching and caching
-import api from '../config/api';
+// Cart service using localStorage ONLY - NO backend API calls
+const CART_KEY = 'cart';
+const CART_VERSION_KEY = 'cart_version';
+const CURRENT_CART_VERSION = '2.0'; // Updated version for new structure
 
 class OptimizedCartService {
   constructor() {
-    this.cache = new Map();
-    this.pendingOperations = [];
-    this.batchTimeout = null;
-    this.BATCH_DELAY = 300; // ms
-    this.CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    // Migrate old cart data on initialization
+    this.migrateCartIfNeeded();
   }
 
-  // Cache management
-  getCachedCart() {
-    const cached = this.cache.get('cart');
-    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
-      return cached.data;
-    }
-    return null;
-  }
-
-  setCachedCart(data) {
-    this.cache.set('cart', {
-      data,
-      timestamp: Date.now()
-    });
-  }
-
-  invalidateCache() {
-    this.cache.delete('cart');
-  }
-
-  // Batch operations
-  batchOperation(operation) {
-    return new Promise((resolve, reject) => {
-      this.pendingOperations.push({ operation, resolve, reject });
-      
-      if (this.batchTimeout) {
-        clearTimeout(this.batchTimeout);
-      }
-      
-      this.batchTimeout = setTimeout(() => {
-        this.processBatch();
-      }, this.BATCH_DELAY);
-    });
-  }
-
-  async processBatch() {
-    if (this.pendingOperations.length === 0) return;
-    
-    const operations = [...this.pendingOperations];
-    this.pendingOperations = [];
-    this.batchTimeout = null;
-
+  // Migrate old cart structure to new structure
+  migrateCartIfNeeded() {
     try {
-      // Group operations by type
-      const grouped = operations.reduce((acc, { operation }) => {
-        const type = operation.type;
-        if (!acc[type]) acc[type] = [];
-        acc[type].push(operation);
-        return acc;
-      }, {});
-
-      // Process each group
-      let finalCart = null;
+      const version = localStorage.getItem(CART_VERSION_KEY);
       
-      for (const [type, ops] of Object.entries(grouped)) {
-        switch (type) {
-          case 'add':
-            for (const op of ops) {
-              await api.post('/cart/add', op.data);
-            }
-            break;
-          case 'update':
-            for (const op of ops) {
-              await api.put('/cart/update', op.data);
-            }
-            break;
-          case 'remove':
-            for (const op of ops) {
-              await api.delete('/cart/remove', { data: op.data });
-            }
-            break;
+      // If version doesn't match, clear old cart
+      if (version !== CURRENT_CART_VERSION) {
+        console.log('Migrating cart to new version...');
+        localStorage.removeItem(CART_KEY);
+        localStorage.setItem(CART_VERSION_KEY, CURRENT_CART_VERSION);
+        console.log('Cart migration complete. Old cart cleared.');
+      }
+    } catch (error) {
+      console.error('Cart migration error:', error);
+    }
+  }
+
+  // Load cart from localStorage
+  loadCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch (error) {
+      console.error('Error loading cart:', error);
+      return [];
+    }
+  }
+
+  // Save cart to localStorage
+  saveCart(cart) {
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      localStorage.setItem(CART_VERSION_KEY, CURRENT_CART_VERSION);
+      // Dispatch event for cart updates
+      window.dispatchEvent(new Event('cartUpdated'));
+    } catch (error) {
+      console.error('Error saving cart:', error);
+    }
+  }
+
+  // Get cart (returns promise for compatibility with existing code)
+  async getCart() {
+    const cart = this.loadCart();
+    return {
+      data: {
+        success: true,
+        cart: {
+          items: cart
         }
       }
-
-      // Fetch updated cart once
-      const cartResponse = await api.get('/cart');
-      finalCart = cartResponse.data;
-      this.setCachedCart(finalCart);
-
-      // Resolve all promises with the same cart data
-      operations.forEach(({ resolve }) => resolve(cartResponse));
-      
-      // Dispatch cart updated event
-      window.dispatchEvent(new Event('cartUpdated'));
-      
-    } catch (error) {
-      // Reject all promises with the error
-      operations.forEach(({ reject }) => reject(error));
-      this.invalidateCache();
-    }
+    };
   }
 
-  // Public API methods
+  // Add item to cart
   async addToCart(item) {
-    this.invalidateCache();
-    return this.batchOperation({
-      type: 'add',
-      data: item
-    });
-  }
+    const cart = this.loadCart();
+    
+    // Check if item already exists (same product and size)
+    const existingItemIndex = cart.findIndex(
+      cartItem => cartItem.productId === item.productId && cartItem.size === item.size
+    );
 
-  async getCart() {
-    // Try cache first
-    const cached = this.getCachedCart();
-    if (cached) {
-      return { data: cached };
+    if (existingItemIndex > -1) {
+      // Update quantity if item exists
+      cart[existingItemIndex].quantity += item.quantity || 1;
+    } else {
+      // Add new item
+      cart.push({
+        productId: item.productId,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        size: item.size,
+        quantity: item.quantity || 1,
+        category: item.category
+      });
     }
 
-    try {
-      const response = await api.get('/cart');
-      this.setCachedCart(response.data);
-      return response;
-    } catch (error) {
-      this.invalidateCache();
-      throw error;
-    }
-  }
-
-  async updateCartItem(item) {
-    this.invalidateCache();
-    return this.batchOperation({
-      type: 'update',
-      data: item
-    });
-  }
-
-  async removeCartItem(item) {
-    this.invalidateCache();
-    return this.batchOperation({
-      type: 'remove',
-      data: item
-    });
-  }
-
-  async clearCart() {
-    this.invalidateCache();
-    const response = await api.delete('/cart/clear');
-    window.dispatchEvent(new Event('cartUpdated'));
-    return response;
-  }
-
-  // Utility methods
-  clearCache() {
-    this.cache.clear();
-  }
-
-  // Preload cart data
-  async preloadCart() {
-    if (!this.getCachedCart()) {
-      try {
-        await this.getCart();
-      } catch (error) {
-        // Silently fail for preloading
-        console.warn('Failed to preload cart:', error);
+    this.saveCart(cart);
+    
+    return {
+      data: {
+        success: true,
+        message: 'Item added to cart',
+        cart: {
+          items: cart
+        }
       }
+    };
+  }
+
+  // Update cart item quantity
+  async updateCartItem(item) {
+    const cart = this.loadCart();
+    
+    const itemIndex = cart.findIndex(
+      cartItem => cartItem.productId === item.productId && cartItem.size === item.size
+    );
+
+    if (itemIndex > -1) {
+      cart[itemIndex].quantity = item.quantity;
+      this.saveCart(cart);
     }
+
+    return {
+      data: {
+        success: true,
+        message: 'Cart updated',
+        cart: {
+          items: cart
+        }
+      }
+    };
+  }
+
+  // Remove item from cart
+  async removeCartItem(item) {
+    const cart = this.loadCart();
+    
+    const filteredCart = cart.filter(
+      cartItem => !(cartItem.productId === item.productId && cartItem.size === item.size)
+    );
+
+    this.saveCart(filteredCart);
+
+    return {
+      data: {
+        success: true,
+        message: 'Item removed from cart',
+        cart: {
+          items: filteredCart
+        }
+      }
+    };
+  }
+
+  // Clear entire cart
+  async clearCart() {
+    localStorage.removeItem(CART_KEY);
+    window.dispatchEvent(new Event('cartUpdated'));
+    
+    return {
+      data: {
+        success: true,
+        message: 'Cart cleared',
+        cart: {
+          items: []
+        }
+      }
+    };
+  }
+
+  // Utility methods for compatibility
+  clearCache() {
+    // No-op for localStorage implementation
+  }
+
+  async preloadCart() {
+    // No-op for localStorage implementation
+  }
+
+  getCachedCart() {
+    return this.loadCart();
   }
 }
 

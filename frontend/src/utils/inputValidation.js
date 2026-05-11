@@ -1,5 +1,4 @@
 // Input validation utilities with real-time character filtering
-// NOTE: Payment validation is currently in TESTING MODE - lenient validation for card details
 
 export const inputValidators = {
   // Full Name - Only letters and spaces
@@ -189,7 +188,7 @@ export const inputValidators = {
     }
   },
 
-  // Card Number - Numbers only with formatting and Luhn validation
+  // Card Number - Numbers only with formatting (accepts any valid format)
   cardNumber: {
     filter: (value) => {
       const numbers = value.replace(/\D/g, '');
@@ -201,29 +200,6 @@ export const inputValidators = {
       if (!numbers) return 'Card number is required';
       if (numbers.length < 13) return 'Card number must be at least 13 digits';
       if (numbers.length > 19) return 'Card number is too long';
-      
-      // Luhn Algorithm validation
-      let sum = 0;
-      let isEven = false;
-      
-      for (let i = numbers.length - 1; i >= 0; i--) {
-        let digit = parseInt(numbers[i], 10);
-        
-        if (isEven) {
-          digit *= 2;
-          if (digit > 9) {
-            digit -= 9;
-          }
-        }
-        
-        sum += digit;
-        isEven = !isEven;
-      }
-      
-      if (sum % 10 !== 0) {
-        return 'Invalid card number';
-      }
-      
       return '';
     },
     onKeyDown: (e) => {

@@ -4,26 +4,23 @@ import UserLayout from '../../components/user/UserLayout';
 import CustomSizeDisplay from '../../components/user/CustomSizeDisplay';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { orderService } from '../../services/order';
 import { getImageUrl } from '../../utils/imageUrl';
 import AddressDisplay from '../../components/AddressDisplay';
 import jsPDF from 'jspdf';
 
 export default function OrderConfirmation() {
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   
   useEffect(() => {
     if (location.state && location.state.order) {
+      console.log('Order data received:', location.state.order);
       setOrder(location.state.order);
+      setLoading(false);
     } else {
-      async function fetchOrder() {
-        const res = await orderService.getUserOrders();
-        if (res.data.orders && res.data.orders.length > 0) {
-          setOrder(res.data.orders[0]);
-        }
-      }
-      fetchOrder();
+      console.warn('No order data in location.state');
+      setLoading(false);
     }
   }, [location.state]);
 
@@ -236,6 +233,24 @@ export default function OrderConfirmation() {
     <UserLayout>
       <div className="py-12">
         <div className="container mx-auto max-w-6xl">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#bfa77b]"></div>
+              <p className="mt-4 text-[#592a0d]">Loading order details...</p>
+            </div>
+          ) : !order ? (
+            <div className="text-center py-20">
+              <h2 className="text-[#bfa77b] mb-4">Order Not Found</h2>
+              <p className="text-[#592a0d] mb-8">We couldn't find your order details.</p>
+              <button
+                onClick={() => window.location.href = '/shop'}
+                className="bg-[#592a0d] text-[#bfa77b] px-8 py-3 rounded-full hover:glow-gold-hover transition-all"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          ) : (
+            <>
           {/* Success Header */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -501,6 +516,8 @@ export default function OrderConfirmation() {
               */}
             </motion.div>
           </div>
+            </>
+          )}
         </div>
       </div>
     </UserLayout>

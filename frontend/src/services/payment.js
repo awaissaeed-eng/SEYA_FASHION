@@ -1,94 +1,26 @@
 import api from '../config/api';
 
-// Mock tokenization service (replace with actual Meezan Bank tokenization)
-class PaymentTokenizer {
-  static async tokenizeCard(cardData) {
-    // Simulate API call to payment gateway for tokenization
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Mock validation
-        if (!cardData.cardNumber || cardData.cardNumber.length < 13) {
-          reject(new Error('Invalid card number'));
-          return;
-        }
-        
-        if (!cardData.expiryDate || !cardData.cvv) {
-          reject(new Error('Missing required card details'));
-          return;
-        }
-
-        // Generate mock token (in production, this comes from Meezan Bank)
-        const token = `tok_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const last4 = cardData.cardNumber.slice(-4);
-        
-        resolve({
-          token,
-          last4,
-          cardType: PaymentTokenizer.detectCardType(cardData.cardNumber),
-          expiryMonth: cardData.expiryDate.split('/')[0],
-          expiryYear: cardData.expiryDate.split('/')[1]
-        });
-      }, 1500); // Simulate network delay
-    });
-  }
-
-  static async tokenizeWallet(walletData) {
-    // Simulate wallet tokenization
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!walletData.mobileNumber || !walletData.otpReference) {
-          reject(new Error('Missing wallet payment details'));
-          return;
-        }
-
-        const token = `wallet_${walletData.walletType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
-        resolve({
-          token,
-          walletType: walletData.walletType,
-          mobileNumber: walletData.mobileNumber,
-          maskedNumber: `***${walletData.mobileNumber.slice(-4)}`
-        });
-      }, 1000);
-    });
-  }
-
-  static detectCardType(cardNumber) {
-    const number = cardNumber.replace(/\s/g, '');
-    
-    if (/^4/.test(number)) return 'Visa';
-    if (/^5[1-5]/.test(number)) return 'Mastercard';
-    if (/^3[47]/.test(number)) return 'American Express';
-    if (/^6/.test(number)) return 'Discover';
-    
-    return 'Unknown';
-  }
-}
+// Card type detection utility
+export const detectCardType = (cardNumber) => {
+  const number = cardNumber.replace(/\s/g, '');
+  
+  if (/^4/.test(number)) return 'Visa';
+  if (/^5[1-5]/.test(number)) return 'Mastercard';
+  if (/^3[47]/.test(number)) return 'American Express';
+  if (/^6/.test(number)) return 'Discover';
+  
+  return 'Unknown';
+};
 
 export const paymentService = {
-  // Tokenize payment method (never sends raw card data to backend)
-  async tokenizePayment(paymentData, paymentMethod) {
-    try {
-      if (paymentMethod === 'card') {
-        return await PaymentTokenizer.tokenizeCard(paymentData);
-      } else {
-        return await PaymentTokenizer.tokenizeWallet({
-          ...paymentData,
-          walletType: paymentMethod
-        });
-      }
-    } catch (error) {
-      throw new Error(`Tokenization failed: ${error.message}`);
-    }
-  },
-
   // Initiate payment with token (secure backend call)
   async initiatePayment(paymentData) {
     try {
       const response = await api.post('/payments/initiate', paymentData);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Payment initiation failed');
+      console.error('Payment initiation error:', error);
+      throw new Error(error.response?.data?.message || 'We could not process your payment. Please try again.');
     }
   },
 
@@ -98,7 +30,8 @@ export const paymentService = {
       const response = await api.get(`/payments/verify/${transactionId}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Payment verification failed');
+      console.error('Payment verification error:', error);
+      throw new Error(error.response?.data?.message || 'Unable to verify payment. Please try again.');
     }
   },
 
@@ -108,7 +41,8 @@ export const paymentService = {
       const response = await api.get(`/payments/status/${transactionId}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to get payment status');
+      console.error('Payment status error:', error);
+      throw new Error(error.response?.data?.message || 'Unable to retrieve payment status. Please try again.');
     }
   }
 };

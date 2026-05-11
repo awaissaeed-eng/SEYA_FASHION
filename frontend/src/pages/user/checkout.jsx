@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, CreditCard, Truck, Lock, ChevronRight, User, Mail, Phone, MapPin } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { cartService } from '../../services/cart';
+import { optimizedCartService } from '../../services/optimizedCart';
 import { taxService } from '../../services/tax';
 import { useNavigate } from 'react-router-dom';
 import UserLayout from '../../components/user/UserLayout';
@@ -33,7 +33,7 @@ export default function Checkout() {
   
   useEffect(() => {
     async function fetchCart() {
-      const res = await cartService.getCart();
+      const res = await optimizedCartService.getCart();
       setCartItems(res.data.cart.items || []);
     }
     

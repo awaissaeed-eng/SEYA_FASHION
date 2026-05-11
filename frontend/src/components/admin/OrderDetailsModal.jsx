@@ -47,7 +47,17 @@ const OrderDetailsModal = ({
           {/* Order Info Grid - Responsive */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <OrderInfoCard title="Customer & Shipping" shippingInfo={shippingInfo} order={order} />
-            <OrderInfoCard title="Order Date" content={order.createdAt ? new Date(order.createdAt).toLocaleDateString() : ''} />
+            <OrderInfoCard 
+              title="Order Date & Time" 
+              content={order.createdAt ? new Date(order.createdAt).toLocaleString('en-PK', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }) : ''} 
+            />
             <OrderBreakdownCard order={order} />
             <OrderItemsCard order={order} />
           </div>

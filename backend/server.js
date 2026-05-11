@@ -110,7 +110,6 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
-app.use('/api/cart', require('./routes/cartRoutes'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
@@ -129,8 +128,7 @@ app.use((req, res) => {
       'GET /api/health',
       'GET /api/products',
       'GET /api/categories',
-      'POST /api/auth/login',
-      'GET /api/cart'
+      'POST /api/auth/login'
     ]
   });
 });

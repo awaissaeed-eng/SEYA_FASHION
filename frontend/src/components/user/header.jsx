@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { cartService } from '../../services/cart';
+import { optimizedCartService } from '../../services/optimizedCart';
 import { getWishlistCount } from '../../utils/wishlist';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, Heart } from 'lucide-react';
@@ -13,7 +13,7 @@ const Header = () => {
   useEffect(() => {
     async function fetchCartCount() {
       try {
-        const res = await cartService.getCart();
+        const res = await optimizedCartService.getCart();
         setCartCount(res.data.cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0);
       } catch {
         setCartCount(0);

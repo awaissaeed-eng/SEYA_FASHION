@@ -18,14 +18,12 @@ export default function Cart() {
 
   const fetchCart = useCallback(async (forceRefresh = false) => {
     setLoading(true);
+    setError(null); // Clear any previous errors
     try {
-      // If forceRefresh, invalidate cache first
-      if (forceRefresh) {
-        optimizedCartService.invalidateCache();
-      }
       const res = await optimizedCartService.getCart();
       setCartItems(res.data.cart.items || []);
     } catch (err) {
+      console.error('Cart fetch error:', err);
       setError('Failed to load cart.');
     } finally {
       setLoading(false);
@@ -64,32 +62,19 @@ export default function Cart() {
     };
   }, [fetchCart]);
 
-  // Get available stock for a cart item
-  const getItemStock = (item) => {
-    if (item.size && item.product?.sizes && Array.isArray(item.product.sizes)) {
-      const sizeObj = item.product.sizes.find(s => s.size === item.size);
-      return sizeObj ? sizeObj.quantity : 0;
-    }
-    return item.product?.stock || 0;
-  };
-
   const updateQuantity = useCallback(async (itemKey, change) => {
     // Parse the itemKey to get product info
     const item = cartItems.find((i, idx) => {
-      const key = `${i.product?._id || i.product}-${i.size}-${i.color}-${idx}`;
+      const key = `${i.productId}-${i.size}-${i.color}-${idx}`;
       return key === itemKey;
     });
     
     if (!item) return;
     const newQty = Math.max(1, item.quantity + change);
-    const availableStock = getItemStock(item);
-    
-    // Don't allow increase beyond stock
-    if (newQty > availableStock) return;
     
     try {
       const res = await optimizedCartService.updateCartItem({
-        productId: item.product._id || item.product,
+        productId: item.productId,
         quantity: newQty,
         size: item.size,
         color: item.color
@@ -104,14 +89,14 @@ export default function Cart() {
   const removeItem = useCallback(async (itemKey) => {
     // Parse the itemKey to get product info
     const item = cartItems.find((i, idx) => {
-      const key = `${i.product?._id || i.product}-${i.size}-${i.color}-${idx}`;
+      const key = `${i.productId}-${i.size}-${i.color}-${idx}`;
       return key === itemKey;
     });
     
     if (!item) return;
     try {
       const res = await optimizedCartService.removeCartItem({
-        productId: item.product._id || item.product,
+        productId: item.productId,
         size: item.size,
         color: item.color
       });
@@ -172,8 +157,8 @@ export default function Cart() {
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-3 sm:space-y-4">
                 {cartItems.map((item, index) => {
-                  // Generate unique key for cookie-based cart items
-                  const itemKey = `${item.product?._id || item.product}-${item.size}-${item.color}-${index}`;
+                  // Generate unique key for localStorage cart items
+                  const itemKey = `${item.productId}-${item.size}-${item.color}-${index}`;
                   
                   return (
                   <motion.div
@@ -187,18 +172,8 @@ export default function Cart() {
                       {/* Product Image */}
                       <div className="w-full sm:w-28 md:w-32 h-36 sm:h-36 md:h-40 rounded-lg overflow-hidden flex-shrink-0">
                         <img
-                          src={
-                            item.product?.images && item.product.images.length > 0
-                              ? item.product.images[0].startsWith('http')
-                                ? item.product.images[0]
-                                : getImageUrl(item.product.images[0])
-                              : item.product?.thumbnail
-                                ? item.product.thumbnail.startsWith('http')
-                                  ? item.product.thumbnail
-                                  : getImageUrl(item.product.thumbnail)
-                                : '/no-image.png'
-                          }
-                          alt={item.product?.name}
+                          src={item.image || '/no-image.png'}
+                          alt={item.name || 'Product'}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -207,7 +182,7 @@ export default function Cart() {
                       <div className="flex-1 space-y-3">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-[#592a0d]">{item.product?.name}</h3>
+                            <h3 className="text-[#592a0d]">{item.name || 'Product'}</h3>
                             <p className="text-[#592a0d]/70 text-sm mt-1">
                               {/* Display size info - custom or regular */}
                               {(item.isCustomSize || item.customSize?.isCustom) ? (
@@ -266,12 +241,7 @@ export default function Cart() {
                                 </span>
                                 <button
                                   onClick={() => updateQuantity(itemKey, 1)}
-                                  disabled={item.quantity >= getItemStock(item)}
-                                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full transition-all flex items-center justify-center touch-manipulation ${
-                                    item.quantity >= getItemStock(item)
-                                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                      : 'bg-[#f5f1e8] text-[#592a0d] hover:bg-[#bfa77b] hover:text-white'
-                                  }`}
+                                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#f5f1e8] text-[#592a0d] hover:bg-[#bfa77b] hover:text-white transition-all flex items-center justify-center touch-manipulation"
                                   aria-label="Increase quantity"
                                 >
                                   <Plus className="w-4 h-4" />
@@ -282,10 +252,10 @@ export default function Cart() {
 
                           {/* Price */}
                           <div className="text-right">
-                            <p className="text-[#bfa77b]">Rs. {(item.product?.price * item.quantity).toLocaleString('en-PK', { maximumFractionDigits: 0 })}</p>
+                            <p className="text-[#bfa77b]">Rs. {((item.price || 0) * item.quantity).toLocaleString('en-PK', { maximumFractionDigits: 0 })}</p>
                             {item.quantity > 1 && (
                               <p className="text-[#592a0d]/60 text-sm">
-                                Rs. {item.product?.price.toLocaleString('en-PK', { maximumFractionDigits: 0 })} each
+                                Rs. {(item.price || 0).toLocaleString('en-PK', { maximumFractionDigits: 0 })} each
                               </p>
                             )}
                           </div>

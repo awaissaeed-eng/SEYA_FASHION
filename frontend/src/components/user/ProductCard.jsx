@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { ShoppingBag, Eye, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import { cartService } from '../../services/cart';
+import { optimizedCartService } from '../../services/optimizedCart';
 import { toggleWishlist, isInWishlist } from '../../utils/wishlist';
 import { OptimizedImage } from '../ui/OptimizedImage';
 import { IMAGE_SIZES } from '../../utils/cloudinaryOptimization';
@@ -47,10 +47,18 @@ const ProductCard = memo(({ id, image, title, price, category, onQuickView, size
     if (isOutOfStock) return;
     setAnimating(true);
     const selectedSize = getRandomAvailableSize();
-    await cartService.addToCart({ productId: id, quantity: 1, size: selectedSize });
+    await optimizedCartService.addToCart({ 
+      productId: id,
+      name: title,
+      image: image,
+      price: price,
+      size: selectedSize,
+      quantity: 1,
+      category: category
+    });
     window.dispatchEvent(new Event('cartUpdated'));
     setTimeout(() => setAnimating(false), 700);
-  }, [id, isOutOfStock, getRandomAvailableSize]);
+  }, [id, title, image, price, category, isOutOfStock, getRandomAvailableSize]);
 
   const handleQuickView = useCallback((e) => {
     e.stopPropagation();
