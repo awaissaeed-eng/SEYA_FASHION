@@ -109,7 +109,11 @@ export default function ProductDetailPage() {
       try {
         const sizeToAdd = selectedSize || getRandomAvailableSize();
         await optimizedCartService.addToCart({ 
-          productId: product._id || product.id, 
+          productId: product._id || product.id,
+          name: product.name,
+          image: product.images && product.images.length > 0 ? product.images[0] : '',
+          price: product.price,
+          category: typeof product.category === 'object' ? product.category.name : product.category,
           quantity, 
           size: sizeToAdd, 
           color: selectedColor 

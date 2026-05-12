@@ -19,9 +19,8 @@ const OrderDetailsModal = ({
   const [validNextStatuses, setValidNextStatuses] = useState([]);
   const [loadingStatuses, setLoadingStatuses] = useState(true);
   
-  if (!order) return null;
-
   // Fetch valid next statuses when order changes
+  // MUST be before any conditional returns (Rules of Hooks)
   useEffect(() => {
     const fetchValidStatuses = async () => {
       if (!order || !order._id) return;
@@ -40,6 +39,9 @@ const OrderDetailsModal = ({
 
     fetchValidStatuses();
   }, [order?._id, order?.status]);
+
+  // Conditional return AFTER all hooks
+  if (!order) return null;
 
   const shippingInfo = formatShippingInfo(order);
   const paymentMethodInfo = getPaymentMethodInfo(order.paymentMethod, order.paymentInfo);

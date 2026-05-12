@@ -166,11 +166,19 @@ export function ProductModal({ isOpen, product, onClose }) {
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-[#592a0d] text-[#bfa77b] py-2 sm:py-3 md:py-4 rounded-full flex items-center justify-center gap-2 font-semibold tracking-wider hover:shadow-lg transition-all text-sm sm:text-base"
                         onClick={async () => {
-                          const { _id, id } = product;
+                          const { _id, id, name, images, price, category } = product;
                           // Use selected size or get a random available size
                           const sizeToAdd = selectedSize || getRandomAvailableSize();
                           await import('../../services/optimizedCart').then(({ optimizedCartService }) => {
-                            optimizedCartService.addToCart({ productId: _id || id, quantity: 1, size: sizeToAdd });
+                            optimizedCartService.addToCart({ 
+                              productId: _id || id, 
+                              name: name,
+                              image: images && images.length > 0 ? images[0] : '',
+                              price: price,
+                              category: typeof category === 'object' ? category.name : category,
+                              quantity: 1, 
+                              size: sizeToAdd 
+                            });
                           });
                           window.dispatchEvent(new Event('cartUpdated'));
                           onClose();

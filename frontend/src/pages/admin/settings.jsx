@@ -76,7 +76,7 @@ export default function Settings() {
 
   const fetchTaxSettings = async () => {
     try {
-      const response = await api.get('/tax');
+      const response = await api.get('/tax/settings');
       const settings = response.data.gstSettings || response.data.taxSettings;
       setTaxSettings({
         gstPercentage: settings.gstPercentage || 0,
@@ -220,7 +220,7 @@ export default function Settings() {
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await api.put('/tax', taxSettings);
+      const response = await api.put('/tax/settings', taxSettings);
 
       if (response.data.success) {
         setMessage({ type: 'success', text: 'Tax and shipping settings updated successfully!' });
