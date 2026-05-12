@@ -40,6 +40,106 @@ const OrderDetailsModal = ({
     fetchValidStatuses();
   }, [order?._id, order?.status]);
 
+  // Function to download base64 file
+  const downloadBase64File = (base64Data, fileName, fileType) => {
+    try {
+      // Validate input
+      if (!base64Data) {
+        alert('No file data available to download.');
+        return;
+      }
+
+      // Create a link element
+      const link = document.createElement('a');
+      
+      // If base64Data already has data URL prefix, use it directly
+      // Otherwise, add the appropriate prefix
+      let dataUrl = base64Data;
+      if (!base64Data.startsWith('data:')) {
+        // Determine MIME type based on file type
+        let mimeType = 'application/octet-stream'; // Default
+        
+        if (fileType === 'image' || fileType.startsWith('image/')) {
+          mimeType = 'image/jpeg'; // Default for images
+          // Try to detect specific image type from file name
+          if (fileName.toLowerCase().endsWith('.png')) mimeType = 'image/png';
+          else if (fileName.toLowerCase().endsWith('.gif')) mimeType = 'image/gif';
+          else if (fileName.toLowerCase().endsWith('.webp')) mimeType = 'image/webp';
+        } else if (fileType === 'pdf' || fileType === 'application/pdf') {
+          mimeType = 'application/pdf';
+        }
+        
+        dataUrl = `data:${mimeType};base64,${base64Data}`;
+      }
+      
+      link.href = dataUrl;
+      link.download = fileName || 'measurement-file';
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('✅ File downloaded successfully:', fileName);
+    } catch (error) {
+      console.error('❌ Failed to download file:', error);
+      alert('Failed to download file. Please try again or contact support.');
+    }
+  };
+
+  // Function to view file in new tab
+  const viewFileInNewTab = (base64Data, fileName) => {
+    try {
+      // Validate input
+      if (!base64Data) {
+        alert('No file data available to view.');
+        return;
+      }
+
+      // Open in new tab
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${fileName || 'Measurement File'}</title>
+              <style>
+                body {
+                  margin: 0;
+                  padding: 20px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                  background-color: #f5f5f5;
+                }
+                img, embed {
+                  max-width: 100%;
+                  height: auto;
+                  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                }
+              </style>
+            </head>
+            <body>
+              ${base64Data.includes('application/pdf') || fileName.toLowerCase().endsWith('.pdf')
+                ? `<embed src="${base64Data}" type="application/pdf" width="100%" height="800px" />`
+                : `<img src="${base64Data}" alt="${fileName}" />`
+              }
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+        console.log('✅ File opened in new tab:', fileName);
+      } else {
+        alert('Please allow pop-ups to view the file.');
+      }
+    } catch (error) {
+      console.error('❌ Failed to view file:', error);
+      alert('Failed to view file. Please try again.');
+    }
+  };
+
   // Conditional return AFTER all hooks
   if (!order) return null;
 
@@ -84,7 +184,7 @@ const OrderDetailsModal = ({
               }) : ''} 
             />
             <OrderBreakdownCard order={order} />
-            <OrderItemsCard order={order} />
+            <OrderItemsCard order={order} onDownloadFile={downloadBase64File} onViewFile={viewFileInNewTab} />
           </div>
 
           {/* Payment Details Section */}
@@ -199,7 +299,7 @@ const OrderBreakdownCard = ({ order }) => (
   </div>
 );
 
-const OrderItemsCard = ({ order }) => (
+const OrderItemsCard = ({ order, onDownloadFile, onViewFile }) => (
   <div className="p-3 sm:p-4 rounded-lg bg-[#faf8f5] border border-[#e8dfd3]">
     <p className="text-xs sm:text-sm text-gray-600 mb-3">Items ({order.products?.length})</p>
     <div className="space-y-3">
@@ -232,50 +332,73 @@ const OrderItemsCard = ({ order }) => (
                             📎 Customer Uploaded Files ({item.customSize.measurementFiles.length})
                           </h5>
                           <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                            {item.customSize.measurementFiles.map((file, fileIdx) => (
-                              <div key={fileIdx} className="flex items-center gap-2 sm:gap-3 p-2 bg-[#faf8f5] rounded border">
-                                {file.fileType === 'image' ? (
-                                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded overflow-hidden flex-shrink-0 border">
-                                    <img
-                                      src={file.url}
-                                      alt={file.originalName}
-                                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                                      onClick={() => window.open(file.url, '_blank')}
-                                      title="Click to view full image"
-                                    />
+                            {item.customSize.measurementFiles.map((file, fileIdx) => {
+                              // Handle both old format (url/filename) and new format (data/name)
+                              const fileData = file.data || file.url;
+                              const fileName = file.name || file.originalName || file.filename || `measurement-${fileIdx + 1}`;
+                              const fileType = file.type || file.fileType || 'image';
+                              const isImage = fileType === 'image' || fileType.startsWith('image/');
+                              
+                              // Validate file data exists
+                              if (!fileData) {
+                                return (
+                                  <div key={fileIdx} className="p-2 bg-red-50 rounded border border-red-200">
+                                    <p className="text-xs text-red-600">⚠️ No file data available for: {fileName}</p>
                                   </div>
-                                ) : (
-                                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded flex items-center justify-center flex-shrink-0 border">
-                                    <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
-                                  </div>
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <p className={`text-xs sm:text-sm font-medium ${tw.primaryText} truncate`}>
-                                    {file.originalName || file.filename}
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    {file.fileType === 'image' ? 'Image' : 'PDF'} • {new Date(file.uploadedAt).toLocaleDateString()}
-                                  </p>
-                                  <div className="flex gap-1 sm:gap-2 mt-1">
-                                    <a
-                                      href={file.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={`text-xs ${tw.primaryBg} text-white px-2 py-1 rounded hover:bg-[#6d3a18] transition-colors`}
-                                    >
-                                      View
-                                    </a>
-                                    <a
-                                      href={file.url}
-                                      download={file.originalName}
-                                      className={`text-xs ${tw.secondaryBg} ${tw.primaryText} px-2 py-1 rounded hover:bg-[#d4a574] transition-colors`}
-                                    >
-                                      Download
-                                    </a>
+                                );
+                              }
+                              
+                              return (
+                                <div key={fileIdx} className="flex items-center gap-2 sm:gap-3 p-2 bg-[#faf8f5] rounded border">
+                                  {isImage ? (
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded overflow-hidden flex-shrink-0 border">
+                                      <img
+                                        src={fileData}
+                                        alt={fileName}
+                                        className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => window.open(fileData, '_blank')}
+                                        title="Click to view full image"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded flex items-center justify-center flex-shrink-0 border">
+                                      <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
+                                    </div>
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`text-xs sm:text-sm font-medium ${tw.primaryText} truncate`}>
+                                      {fileName}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      {isImage ? 'Image' : 'PDF'} • {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'N/A'}
+                                    </p>
+                                    <div className="flex gap-1 sm:gap-2 mt-1">
+                                      <button
+                                        onClick={() => onViewFile(fileData, fileName)}
+                                        className={`text-xs ${tw.primaryBg} text-white px-3 py-1.5 rounded hover:bg-[#6d3a18] transition-colors font-medium flex items-center gap-1`}
+                                        title="View file in new tab"
+                                      >
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        View
+                                      </button>
+                                      <button
+                                        onClick={() => onDownloadFile(fileData, fileName, fileType)}
+                                        className={`text-xs ${tw.secondaryBg} ${tw.primaryText} px-3 py-1.5 rounded hover:bg-[#d4a574] transition-colors font-medium flex items-center gap-1`}
+                                        title="Download file to computer"
+                                      >
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       )}

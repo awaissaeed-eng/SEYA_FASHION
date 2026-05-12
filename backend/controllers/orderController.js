@@ -3,6 +3,7 @@ const { createLog } = require('./activityLogController');
 const { calculateGst } = require('./taxController');
 const { validateStatusTransition, getValidNextStatuses } = require('../utils/orderStatusRules');
 const { sendOrderConfirmationEmail } = require('../utils/email');
+const { orderConfirmationTemplate } = require('../utils/emailTemplates');
 const EmailLog = require('../models/emailLog');
 
 // Get all orders for admin panel with full details
@@ -275,6 +276,24 @@ exports.createOrder = async (req, res, next) => {
       
       if (isCustomSizeItem) {
         size = 'Custom Size'; // Set proper display for custom size
+        
+        // Log custom size data for debugging
+        console.log('📏 Custom size item detected:', {
+          productName: productDoc.name,
+          hasCustomSize: !!item.customSize,
+          hasMeasurements: !!item.customSize?.measurements,
+          hasFiles: !!item.customSize?.measurementFiles,
+          filesCount: item.customSize?.measurementFiles?.length || 0
+        });
+        
+        if (item.customSize?.measurementFiles && item.customSize.measurementFiles.length > 0) {
+          console.log('📎 Measurement files received:', item.customSize.measurementFiles.map(f => ({
+            name: f.name,
+            type: f.type,
+            hasData: !!f.data,
+            dataLength: f.data?.length || 0
+          })));
+        }
       } else if (!size || size === '') {
         // Assign default size for standard items
         if (productDoc.sizes && productDoc.sizes.length > 0) {
@@ -545,6 +564,11 @@ exports.createOrder = async (req, res, next) => {
     // ═══════════════════════════════════════════════════════════════
     try {
       console.log('Sending order confirmation email...');
+      
+      // Generate email HTML from template
+      const emailHTML = orderConfirmationTemplate(order);
+      
+      // Send email using the email utility
       const emailResult = await sendOrderConfirmationEmail(order);
       
       if (emailResult.success) {
@@ -554,7 +578,7 @@ exports.createOrder = async (req, res, next) => {
         try {
           await EmailLog.create({
             recipient: order.customerInfo.email,
-            subject: `Order Confirmed — ${order.orderId} — SEYA Fashion`,
+            subject: `Order Confirmed — ${order.orderId} | Seya Fashion`,
             type: 'order_confirmation',
             status: 'sent',
             relatedId: order._id,
@@ -574,7 +598,7 @@ exports.createOrder = async (req, res, next) => {
         try {
           await EmailLog.create({
             recipient: order.customerInfo.email,
-            subject: `Order Confirmed — ${order.orderId} — SEYA Fashion`,
+            subject: `Order Confirmed — ${order.orderId} | Seya Fashion`,
             type: 'order_confirmation',
             status: 'failed',
             error: emailResult.error,
@@ -596,7 +620,7 @@ exports.createOrder = async (req, res, next) => {
       try {
         await EmailLog.create({
           recipient: order.customerInfo.email,
-          subject: `Order Confirmed — ${order.orderId} — SEYA Fashion`,
+          subject: `Order Confirmed — ${order.orderId} | Seya Fashion`,
           type: 'order_confirmation',
           status: 'failed',
           error: emailError.message,

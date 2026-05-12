@@ -65,25 +65,34 @@ class OptimizedCartService {
   async addToCart(item) {
     const cart = this.loadCart();
     
+    // For custom size items, use a unique identifier that includes custom size flag
+    const isCustomSize = item.isCustomSize || item.customSize?.isCustom || false;
+    
     // Check if item already exists (same product and size)
-    const existingItemIndex = cart.findIndex(
+    // For custom size items, always add as new item (don't merge quantities)
+    const existingItemIndex = isCustomSize ? -1 : cart.findIndex(
       cartItem => cartItem.productId === item.productId && cartItem.size === item.size
     );
 
     if (existingItemIndex > -1) {
-      // Update quantity if item exists
+      // Update quantity if item exists (only for standard sizes)
       cart[existingItemIndex].quantity += item.quantity || 1;
     } else {
       // Add new item
-      cart.push({
+      const cartItem = {
         productId: item.productId,
         name: item.name,
         image: item.image,
         price: item.price,
         size: item.size,
         quantity: item.quantity || 1,
-        category: item.category
-      });
+        category: item.category,
+        // Add custom size data if present
+        isCustomSize: isCustomSize,
+        customSize: item.customSize || { isCustom: false }
+      };
+      
+      cart.push(cartItem);
     }
 
     this.saveCart(cart);

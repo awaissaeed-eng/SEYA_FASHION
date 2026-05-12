@@ -129,47 +129,63 @@ export default function ProductDetailPage() {
   const handleCustomSizeSubmit = async (customSizeData) => {
     setAddingToCart(true);
     try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('productId', product._id || product.id);
-      formData.append('quantity', quantity);
-      formData.append('size', 'Custom Size');
-      formData.append('color', selectedColor);
+      // Convert file objects to base64 for localStorage storage
+      const measurementFiles = [];
       
-      // Add custom size data
-      formData.append('customSize', JSON.stringify({
-        isCustom: true,
-        measurements: customSizeData.measurements,
-        notes: customSizeData.notes
-      }));
-      
-      // Add files if any
       if (customSizeData.files && customSizeData.files.length > 0) {
-        customSizeData.files.forEach((fileObj) => {
-          formData.append('measurementFiles', fileObj.file);
-        });
+        for (const fileObj of customSizeData.files) {
+          // Read file as base64
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(fileObj.file);
+          });
+          
+          measurementFiles.push({
+            name: fileObj.name,
+            type: fileObj.type,
+            size: fileObj.size,
+            data: base64, // Store base64 data
+            uploadedAt: new Date().toISOString()
+          });
+        }
       }
-
-      // Get API base URL
-      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
       
-      // Use fetch instead of cartService for file upload
-      const response = await fetch(`${API_BASE_URL}/cart/add`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token') || ''}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add to cart');
-      }
-
+      // Prepare cart item with custom size data
+      const cartItem = {
+        productId: product._id || product.id,
+        name: product.name,
+        image: product.images?.[0] || product.thumbnail,
+        price: product.price,
+        size: 'Custom Size',
+        quantity: quantity,
+        category: product.category?.name || product.category || 'Uncategorized',
+        isCustomSize: true,
+        customSize: {
+          isCustom: true,
+          measurements: customSizeData.measurements,
+          notes: customSizeData.notes,
+          measurementFiles: measurementFiles
+        }
+      };
+      
+      // Add to cart using cart service
+      await optimizedCartService.addToCart(cartItem);
+      
+      // Dispatch cart updated event
       window.dispatchEvent(new Event('cartUpdated'));
+      
+      // Close form and reset
       setShowCustomSizeForm(false);
+      setSelectedSize('');
+      
+      // Show success message (optional)
+      console.log('✅ Custom size item added to cart successfully');
+      
     } catch (error) {
       console.error('Failed to add custom size to cart:', error);
+      alert('Failed to add item to cart. Please try again.');
     } finally {
       setAddingToCart(false);
     }

@@ -104,13 +104,15 @@ const orderSchema = new mongoose.Schema({
         }
       },
       notes: String,
-      measurementFiles: [{
-        filename: String,
-        originalName: String,
-        url: String,
-        fileType: { type: String, enum: ['image', 'pdf'] },
-        uploadedAt: { type: Date, default: Date.now }
-      }]
+      measurementFiles: [
+        {
+          name: { type: String }, // File name
+          type: { type: String }, // MIME type (image/jpeg, application/pdf, etc.)
+          size: { type: Number }, // File size in bytes
+          data: { type: String }, // Base64 encoded file data
+          uploadedAt: { type: Date, default: Date.now }
+        }
+      ]
     },
     // Track if original product still exists
     productExists: {

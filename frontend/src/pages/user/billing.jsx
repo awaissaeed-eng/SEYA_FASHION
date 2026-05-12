@@ -215,14 +215,24 @@ export default function Billing() {
 
       // Create order with pending payment status
       const orderData = {
-        products: cartItems.map(item => ({
-          product: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-          size: item.size,
-          isCustomSize: item.isCustomSize || false,
-          customSize: item.customSize || { isCustom: false }
-        })),
+        products: cartItems.map(item => {
+          console.log('📦 Processing cart item for order:', {
+            name: item.name,
+            isCustomSize: item.isCustomSize,
+            hasCustomSize: !!item.customSize,
+            hasFiles: item.customSize?.measurementFiles?.length > 0,
+            filesCount: item.customSize?.measurementFiles?.length || 0
+          });
+          
+          return {
+            product: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+            size: item.size,
+            isCustomSize: item.isCustomSize || false,
+            customSize: item.customSize || { isCustom: false }
+          };
+        }),
         customerInfo: {
           firstName: checkoutData.firstName,
           lastName: checkoutData.lastName,
@@ -252,6 +262,16 @@ export default function Billing() {
         totalAmount: cartTotals.total
       };
 
+      console.log('📤 Sending order data to backend:', {
+        productsCount: orderData.products.length,
+        products: orderData.products.map(p => ({
+          name: p.product,
+          isCustomSize: p.isCustomSize,
+          hasCustomSizeData: !!p.customSize,
+          hasFiles: p.customSize?.measurementFiles?.length > 0,
+          filesCount: p.customSize?.measurementFiles?.length || 0
+        }))
+      });
       console.log('Creating order with data:', orderData);
 
       const orderResponse = await fetch('http://localhost:5000/api/orders', {

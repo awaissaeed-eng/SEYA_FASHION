@@ -27,6 +27,7 @@ export default function Checkout() {
   const [errors, setErrors] = useState({});
   const [fieldValidation, setFieldValidation] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const [emailError, setEmailError] = useState('');
 
   const [cartItems, setCartItems] = useState([]);
   const [gstSettings, setGstSettings] = useState({ gstPercentage: 0, isEnabled: false });
@@ -80,7 +81,12 @@ export default function Checkout() {
       ...prev,
       [name]: value,
     }));
-  }, []);
+    
+    // Clear email error when user starts typing in email field
+    if (name === 'email' && emailError) {
+      setEmailError('');
+    }
+  }, [emailError]);
 
   const handleValidation = useCallback((fieldName, isValid) => {
     setFieldValidation(prev => ({
@@ -104,18 +110,77 @@ export default function Checkout() {
     setIsFormValid(allRequiredValid);
   }, [fieldValidation, shippingInfo]);
 
+  // Email validation function
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email.trim());
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Final validation
-    const { isValid, errors: validationErrors } = validateForm(shippingInfo, validationRules);
+    // ═══════════════════════════════════════════════════════════════
+    // STEP 1: VALIDATE EMAIL ON BUTTON CLICK ONLY
+    // ═══════════════════════════════════════════════════════════════
+    if (shippingInfo.email && !validateEmail(shippingInfo.email)) {
+      setEmailError('Incorrect Email');
+      // Scroll to email field
+      document.querySelector('input[name="email"]')?.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+      return; // Stop - do not proceed
+    }
     
-    if (!isValid) {
-      setErrors(validationErrors);
+    // Clear email error if valid
+    setEmailError('');
+    
+    // ═══════════════════════════════════════════════════════════════
+    // STEP 2: VALIDATE OTHER REQUIRED FIELDS
+    // ═══════════════════════════════════════════════════════════════
+    const newErrors = {};
+    
+    // First Name validation
+    if (!shippingInfo.firstName || !shippingInfo.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+    
+    // Phone validation (Pakistan format)
+    if (!shippingInfo.phone || !shippingInfo.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (shippingInfo.country === 'Pakistan') {
+      // Pakistan phone format: 03XX-XXXXXXX or +92-3XX-XXXXXXX
+      const pkPhoneRegex = /^(\+92|0)?3[0-9]{2}[-\s]?[0-9]{7}$/;
+      if (!pkPhoneRegex.test(shippingInfo.phone.replace(/\s/g, ''))) {
+        newErrors.phone = 'Invalid Pakistan phone number format';
+      }
+    }
+    
+    // Address validation
+    if (!shippingInfo.address || !shippingInfo.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+    
+    // City validation
+    if (!shippingInfo.city || !shippingInfo.city.trim()) {
+      newErrors.city = 'City is required';
+    }
+    
+    // If there are errors, show them and stop
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Scroll to first error
+      const firstErrorField = Object.keys(newErrors)[0];
+      document.querySelector(`input[name="${firstErrorField}"]`)?.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
       return;
     }
-
-    // Clear errors and proceed
+    
+    // ═══════════════════════════════════════════════════════════════
+    // STEP 3: ALL VALID - PROCEED TO BILLING
+    // ═══════════════════════════════════════════════════════════════
     setErrors({});
     
     const checkoutData = {
@@ -222,17 +287,25 @@ export default function Checkout() {
                       icon={<User className="w-4 h-4 sm:w-5 sm:h-5" />}
                     />
                     
-                    <ValidatedInput
-                      name="email"
-                      value={shippingInfo.email}
-                      onChange={handleInputChange}
-                      onValidation={handleValidation}
-                      validationType="email"
-                      label={`Email ${shippingInfo.phone ? '(optional)' : ''}`}
-                      placeholder="Enter your email address"
-                      required={!shippingInfo.phone}
-                      icon={<Mail className="w-4 h-4 sm:w-5 sm:h-5" />}
-                    />
+                    <div>
+                      <ValidatedInput
+                        name="email"
+                        value={shippingInfo.email}
+                        onChange={handleInputChange}
+                        onValidation={handleValidation}
+                        validationType="email"
+                        label={`Email ${shippingInfo.phone ? '' : ''}`}
+                        placeholder="Enter your email address"
+                        required={!shippingInfo.phone}
+                        icon={<Mail className="w-4 h-4 sm:w-5 sm:h-5" />}
+                        className={emailError ? 'border-red-500' : ''}
+                      />
+                      {emailError && (
+                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                          <span>⚠</span>{emailError}
+                        </p>
+                      )}
+                    </div>
                     
                     <ValidatedInput
                       name="phone"
