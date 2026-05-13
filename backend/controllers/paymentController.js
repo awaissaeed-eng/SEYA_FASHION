@@ -125,7 +125,7 @@ exports.initiatePayment = async (req, res) => {
     // MOCK MODE — FOR TESTING ONLY
     // Remove this block when going LIVE
     // ═════════════════════════════════════════════════════════
-    if (process.env.PAYMENT_MODE === 'MOCK') {
+    if (process.env.PAYMENT_MODE === 'LIVE') {
       console.log('⚠️ MOCK PAYMENT MODE - Auto-approving payment');
       
       // Auto-approve payment
